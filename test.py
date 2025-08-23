@@ -5,10 +5,12 @@ import seaborn as sns
 import torch
 import torch.nn.functional as F
 from models.LMGNN import BertGGCN
-import configs
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
+import os
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+from utils.figure.plot import plot_confusion_matrix, plot_roc_curve
 
-def test(model, device, test_loader):
+
+def test(model, device, test_loader, figure_save_path = ''): 
     """
     Tests the model using the provided test data loader.
 
@@ -28,13 +30,15 @@ def test(model, device, test_loader):
         with torch.no_grad():
             y_ = model(batch)
 
-        batch.y = batch.y.squeeze().long()
-        test_loss += F.cross_entropy(y_, batch.y).item()
+        batch.y = batch.y.squeeze().float()
+        # BCE on probabilities
+        test_loss += F.binary_cross_entropy(y_.squeeze(-1), batch.y).item()
 
-        pred = y_.max(-1, keepdim=True)[1]
+        probs = y_.squeeze(-1)
+        pred = (probs > 0.5).long()
         y_true.extend(batch.y.cpu().numpy())
         y_pred.extend(pred.cpu().numpy())
-        y_probs.extend(torch.softmax(y_, dim=1).cpu().numpy()[:, 1])
+        y_probs.extend(probs.cpu().numpy())
 
     test_loss /= len(test_loader)
     accuracy = accuracy_score(y_true, y_pred)
@@ -42,33 +46,13 @@ def test(model, device, test_loader):
     recall = recall_score(y_true, y_pred)
     f1 = f1_score(y_true, y_pred)
 
-    cm = confusion_matrix(y_true, y_pred)
-
-    plt.figure(figsize=(8, 6))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['benign', 'malware'],
-                yticklabels=['benign', 'malware'])
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
-    plt.savefig('confusion_matrix.png')
-
-    fpr, tpr, _ = roc_curve(y_true, y_probs)
-    roc_auc = auc(fpr, tpr)
-
-    plt.figure()
-    plt.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
-    plt.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic (ROC) Curve')
-    plt.legend(loc='lower right')
-    plt.savefig('roc_curve.png')
+    # Plots moved to utils.figure.plot
+    plot_confusion_matrix(y_true, y_pred, save_path=os.path.join(figure_save_path, 'confusion_matrix.png'), labels=['benign', 'malware'])
+    plot_roc_curve(y_true, y_probs, save_path=os.path.join(figure_save_path, 'roc_curve.png'))
 
     results_array = np.column_stack((y_true, y_pred, y_probs))
     header_text = "True label, Predicted label, Predicted Probability"
-    np.savetxt('results.txt', results_array, fmt='%1.6f', delimiter='\t', header=header_text)
+    np.savetxt(os.path.join(figure_save_path, 'results.txt'), results_array, fmt='%1.6f', delimiter='\t', header=header_text)
 
     print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%, Precision: {:.2f}%, Recall: {:.2f}%, F1: {:.2f}%'.format(
         test_loss, accuracy * 100, precision * 100, recall * 100, f1 * 100))

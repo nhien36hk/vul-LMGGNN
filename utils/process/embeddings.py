@@ -14,11 +14,12 @@ class NodesEmbedding:
         self.tokenizer_bert = RobertaTokenizer.from_pretrained("microsoft/codebert-base")
         self.bert_model = RobertaModel.from_pretrained("microsoft/codebert-base").to("cuda")
         self.nodes_dim = nodes_dim
+        self.bert_hidden_size = 768 
 
         assert self.nodes_dim >= 0
 
         # Buffer for embeddings with padding
-        self.target = torch.zeros(self.nodes_dim, self.kv_size + 1).float()
+        self.target = torch.zeros(self.nodes_dim, self.bert_hidden_size + 1).float()
 
     def __call__(self, nodes):
         embedded_nodes = self.embed_nodes(nodes)

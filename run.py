@@ -1,100 +1,16 @@
 import argparse
-import gc
-import shutil
 from argparse import ArgumentParser
 import configs
-import utils.data as data
-import utils.process as process
-import utils.functions.cpg as cpg
 import torch
 import torch.nn.functional as F
 from utils.data.datamanager import loads, train_val_test_split
 from models.LMGNN import BertGGCN
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
-import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from test import test
-
+from tqdm import tqdm
 PATHS = configs.Paths()
 FILES = configs.Files()
 DEVICE = FILES.get_device()
-
-
-def select(dataset):
-    result = dataset.loc[dataset['project'] == "FFmpeg"]
-    len_filter = result.func.str.len() < 1200
-    result = result.loc[len_filter]
-    #print(len(result))
-    #result = result.iloc[11001:]
-    #print(len(result))
-    result = result.head(200)
-
-    return result
-
-def CPG_generator():
-    """
-    Generates Code Property Graph (CPG) datasets from raw data.
-
-    :return: None
-    """
-    context = configs.Create()
-    raw = data.read(PATHS.raw, FILES.raw)
-
-    # Here, taking the Devign dataset as an example,
-    # specific modifications need to be made according to different dataset formats.
-    filtered = data.apply_filter(raw, select)
-    filtered = data.clean(filtered)
-    data.drop(filtered, ["commit_id", "project"])
-    slices = data.slice_frame(filtered, context.slice_size)
-    slices = [(s, slice.apply(lambda x: x)) for s, slice in slices]
-
-    cpg_files = []
-    # Create CPG binary files
-    for s, slice in slices:
-        data.to_files(slice, PATHS.joern)
-        cpg_file = process.joern_parse(context.joern_cli_dir, PATHS.joern, PATHS.cpg, f"{s}_{FILES.cpg}")
-        cpg_files.append(cpg_file)
-        print(f"Dataset {s} to cpg.")
-        shutil.rmtree(PATHS.joern)
-    # Create CPG with graphs json files
-    json_files = process.joern_create(context.joern_cli_dir, PATHS.cpg, PATHS.cpg, cpg_files)
-    for (s, slice), json_file in zip(slices, json_files):
-        graphs = process.json_process(PATHS.cpg, json_file)
-        if graphs is None:
-            print(f"Dataset chunk {s} not processed.")
-            continue
-        dataset = data.create_with_index(graphs, ["Index", "cpg"])
-        dataset = data.inner_join_by_index(slice, dataset)
-        print(f"Writing cpg dataset chunk {s}.")
-        data.write(dataset, PATHS.cpg, f"{s}_{FILES.cpg}.pkl")
-        del dataset
-        gc.collect()
-
-def Embed_generator():
-    """
-    Generates embeddings from Code Property Graph (CPG) datasets.
-
-    :return: None
-    """
-    context = configs.Embed()
-    dataset_files = data.get_directory_files(PATHS.cpg)
-
-    for pkl_file in dataset_files:
-        file_name = pkl_file.split(".")[0]
-        cpg_dataset = data.load(PATHS.cpg, pkl_file)
-        tokens_dataset = data.tokenize(cpg_dataset)
-        data.write(tokens_dataset, PATHS.tokens, f"{file_name}_{FILES.tokens}")
-
-        cpg_dataset["nodes"] = cpg_dataset.apply(lambda row: cpg.parse_to_nodes(row.cpg, context.nodes_dim), axis=1)
-        cpg_dataset["input"] = cpg_dataset.apply(lambda row: process.nodes_to_input(row.nodes, row.target, context.nodes_dim,
-                                                                            context.edge_type), axis=1)
-        data.drop(cpg_dataset, ["nodes"])
-        print(f"Saving input dataset {file_name} with size {len(cpg_dataset)}.")
-        # write(cpg_dataset[["input", "target"]], PATHS.input, f"{file_name}_{FILES.input}")
-        # write(cpg_dataset[["input", "target","func"]], PATHS.input, f"{file_name}_{FILES.input}")
-        data.write(cpg_dataset[["input", "target", "func"]], PATHS.input, f"{file_name}_{FILES.input}")
-
-        del cpg_dataset
-        gc.collect()
 
 
 def train(model, device, train_loader, optimizer, epoch):
@@ -108,26 +24,28 @@ def train(model, device, train_loader, optimizer, epoch):
     :param epoch: The current epoch number.
     :return: None
     """
+    
+    train_loss = 0.0
 
     model.train()
-    best_acc = 0.0
-    for batch_idx, batch in enumerate(train_loader):
+    progress_bar = tqdm(enumerate(train_loader), total=len(train_loader), desc=f"Training Epoch {epoch}")
+    for batch_idx, batch in progress_bar:
         batch.to(device)
 
         y_pred = model(batch)
         model.zero_grad()
-        # print("y_pred data type:", y_pred.dtype)
-        # print("batch.y.squeeze() data type:", batch.y.squeeze().dtype)
-        batch.y = batch.y.squeeze().long()
-        loss = F.cross_entropy(y_pred, batch.y)
+        batch.y = batch.y.squeeze().float()
+        loss = F.binary_cross_entropy(y_pred.squeeze(-1), batch.y)
         loss.backward()
         optimizer.step()
-        if (batch_idx + 1) % 100 == 0:
-            print('Train Epoch: {} [{}/{} ({:.2f}%)]/t Loss: {:.6f}'.format(epoch, (batch_idx + 1) * len(batch),
-                                                                            len(train_loader.dataset),
-                                                                            100. * batch_idx / len(train_loader),
-                                                                            loss.item()))
-def validate(model, device, test_loader):
+
+        train_loss += loss.item()
+        progress_bar.set_postfix({"loss": f"{train_loss:.6f}"})
+
+    train_loss /= len(train_loader)
+    print(f"Training Epoch {epoch} finished. Loss: {train_loss:.6f}")
+
+def validate(model, device, test_loader, epoch):
     """
     Validates the model using the provided test data.
 
@@ -141,18 +59,21 @@ def validate(model, device, test_loader):
     y_true = []
     y_pred = []
 
-    for batch_idx, batch in enumerate(test_loader):
+    progress_bar = tqdm(enumerate(test_loader), total=len(test_loader), desc=f"Validating Epoch {epoch}")
+    for batch_idx, batch in progress_bar:
         batch.to(device)
         with torch.no_grad():
             y_ = model(batch)
 
-        batch.y = batch.y.squeeze().long()
-        test_loss += F.cross_entropy(y_, batch.y).item()
-        pred = y_.max(-1, keepdim=True)[1]
+        batch.y = batch.y.squeeze().float()
+        # BCE on probabilities
+        test_loss += F.binary_cross_entropy(y_.squeeze(-1), batch.y).item()
+        probs = y_.squeeze(-1)
+        pred = (probs > 0.5).long()
 
         y_true.extend(batch.y.cpu().numpy())
         y_pred.extend(pred.cpu().numpy())
-
+        progress_bar.set_postfix({"loss": f"{test_loss:.4f}"})
     test_loss /= len(test_loader)
 
     accuracy = accuracy_score(y_true, y_pred)
@@ -160,17 +81,9 @@ def validate(model, device, test_loader):
     recall = recall_score(y_true, y_pred)
     f1 = f1_score(y_true, y_pred)
 
-    cm = confusion_matrix(y_true, y_pred)
-
-    plt.figure(figsize=(8, 6))
-    # sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=['benign', 'malware'], yticklabels=['benign', 'malware'])
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title('Confusion Matrix')
-    plt.savefig('confusion_matrix.png')
-
-    print('Test set: Average loss: {:.4f}, Accuracy: {:.2f}%, Precision: {:.2f}%, Recall: {:.2f}%, F1: {:.2f}%'.format(
+    print('Valid set: Average loss: {:.4f}, Accuracy: {:.2f}%, Precision: {:.2f}%, Recall: {:.2f}%, F1: {:.2f}%'.format(
         test_loss, accuracy * 100, precision * 100, recall * 100, f1 * 100))
+    print()
 
     return accuracy, precision, recall, f1
 
@@ -184,10 +97,10 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    if args.cpg:
-        CPG_generator()
-    if args.embed:
-        Embed_generator()
+    # if args.cpg:
+    #     CPG_generator()
+    # if args.embed:
+    #     Embed_generator()
 
     context = configs.Process()
     input_dataset = loads(PATHS.input)
@@ -211,14 +124,15 @@ if __name__ == '__main__':
         PATH = args.path
         for epoch in range(1, NUM_EPOCHS + 1):
             train(model, device, train_loader, optimizer, epoch)
-            acc, precision, recall, f1 = validate(model, DEVICE, val_loader)
-            if best_acc < acc:
+            acc, precision, recall, f1 = validate(model, DEVICE, val_loader, epoch)
+            if acc > best_acc:
                 best_acc = acc
-                torch.save(model.state_dict(), PATH)
-            print("acc is: {:.4f}, best acc is {:.4f}n".format(acc, best_acc))
+                if PATH:
+                    torch.save(model.state_dict(), PATH)
+        print(f"Training finished. Best Acc: {best_acc:.4f}")
 
     model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
     model_test.load_state_dict(torch.load(args.path))
-    accuracy, precision, recall, f1 = test(model_test, DEVICE, test_loader)
+    test(model_test, DEVICE, test_loader)
 
 

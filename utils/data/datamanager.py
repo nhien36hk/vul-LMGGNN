@@ -90,8 +90,11 @@ def train_val_test_split(data_frame: pd.DataFrame, shuffle=True):
     false = data_frame[data_frame.target == 0]
     true = data_frame[data_frame.target == 1]
 
+    # split false
     train_false, test_false = train_test_split(false, test_size=0.2, shuffle=shuffle)
     test_false, val_false = train_test_split(test_false, test_size=0.5, shuffle=shuffle)
+    
+    # split true
     train_true, test_true = train_test_split(true, test_size=0.2, shuffle=shuffle)
     test_true, val_true = train_test_split(test_true, test_size=0.5, shuffle=shuffle)
 
