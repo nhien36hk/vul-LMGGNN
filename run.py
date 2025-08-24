@@ -110,8 +110,10 @@ if __name__ == '__main__':
     
     # Select model based on the modeLM argument
     if args.modeLM:
-        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
-        model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
+        finetune_file = "data/model/graphcodebert_finetune.pt"
+        hugging_path = "data/model/graphcodebert_finetune_hf"
+        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to("cuda")
+        model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to("cuda")
     else:
         model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
         model_test = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
