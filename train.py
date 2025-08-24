@@ -2,6 +2,7 @@ import os
 import torch
 
 import configs
+from models.GGCN import GGCN
 from models.LMGNN import BertGGCN
 from run import train, validate
 from test import test
@@ -16,6 +17,7 @@ def run_kaggle_train(
     figure_save_path: str = '/kaggle/working/figures/',
     batch_size: int = 64,
     k: float = 0.6,
+    mode_lm: bool = True
 ):
     """
     Kaggle-ready train flow using prebuilt input PKLs from input_dir.
@@ -46,24 +48,29 @@ def run_kaggle_train(
     emb_size = bertggnn.model["emb_size"]
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k).to(device)
+    
+    if mode_lm:
+        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k).to(device)
+        best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k).to(device)
+    else:
+        model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        best_model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=bertggnn.learning_rate, weight_decay=bertggnn.weight_decay)
 
     # Train loop
-    best_acc = 0.0
+    best_f1 = 0.0
     best_path = os.path.join(output_model_dir, model_filename)
 
     epochs = proc_config.epochs
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, optimizer, epoch)
         acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
-        if best_acc < acc:
-            best_acc = acc
+        if best_f1 < f1:
+            best_f1 = f1
             torch.save(model.state_dict(), best_path)
-    print(f"Training finished. Best Acc: {best_acc:.4f}")
+    print(f"Training finished. Best F1: {best_f1:.4f}")
 
     # Load best and evaluate on test
-    best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k).to(device)
     best_model.load_state_dict(torch.load(best_path, map_location=device))
     test(best_model, device, test_loader, figure_save_path)

@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 import configs
 import torch
 import torch.nn.functional as F
+from models.GGCN import GGCN
 from utils.data.datamanager import loads, train_val_test_split
 from models.LMGNN import BertGGCN
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
@@ -89,18 +90,10 @@ def validate(model, device, test_loader, epoch):
 
 if __name__ == '__main__':
     parser: ArgumentParser = argparse.ArgumentParser()
-    # parser.add_argument('-p', '--prepare', help='Prepare task', required=False)
-    parser.add_argument('-cpg', '--cpg', action='store_true', help='Specify to perform CPG generation task')
-    parser.add_argument('-embed', '--embed', action='store_true', help='Specify to perform Embedding generation task')
-    parser.add_argument('-mode', '--mode', default="train", help='Specify the mode (e.g., train, test)')
-    parser.add_argument('-path', '--path', default=None, help='Specify the path for the model')
+    parser.add_argument('-m', '--modeLM', action='store_true', help='Specify the mode for LMTrain')
+    parser.add_argument('-p', '--path', default="data/model/model.pth", help='Specify the path for the model')
 
     args = parser.parse_args()
-
-    # if args.cpg:
-    #     CPG_generator()
-    # if args.embed:
-    #     Embed_generator()
 
     context = configs.Process()
     input_dataset = loads(PATHS.input)
@@ -114,24 +107,29 @@ if __name__ == '__main__':
     conv_args = Bertggnn.model["conv_args"]
     emb_size = Bertggnn.model["emb_size"]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-    if args.mode == "train":
+    
+    # Select model based on the modeLM argument
+    if args.modeLM:
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
-        optimizer = torch.optim.AdamW(model.parameters(), lr=Bertggnn.learning_rate, weight_decay=Bertggnn.weight_decay)
+        model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
+    else:
+        model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
+        model_test = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
 
-        best_acc = 0.0
-        NUM_EPOCHS = context.epochs
-        PATH = args.path
-        for epoch in range(1, NUM_EPOCHS + 1):
-            train(model, device, train_loader, optimizer, epoch)
-            acc, precision, recall, f1 = validate(model, DEVICE, val_loader, epoch)
-            if acc > best_acc:
-                best_acc = acc
-                if PATH:
-                    torch.save(model.state_dict(), PATH)
-        print(f"Training finished. Best Acc: {best_acc:.4f}")
+    optimizer = torch.optim.AdamW(model.parameters(), lr=Bertggnn.learning_rate, weight_decay=Bertggnn.weight_decay)
 
-    model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
+    best_f1 = 0.0
+    NUM_EPOCHS = context.epochs
+    PATH = args.path
+    for epoch in range(1, NUM_EPOCHS + 1):
+        train(model, device, train_loader, optimizer, epoch)
+        acc, precision, recall, f1 = validate(model, DEVICE, val_loader, epoch)
+        if f1 > best_f1:
+            best_f1 = f1
+            if PATH:
+                torch.save(model.state_dict(), PATH)
+    print(f"Training finished. Best F1: {best_f1:.4f}")
+
     model_test.load_state_dict(torch.load(args.path))
     test(model_test, DEVICE, test_loader)
 

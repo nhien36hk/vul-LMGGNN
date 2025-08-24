@@ -89,6 +89,10 @@ def train_val_test_split(data_frame: pd.DataFrame, shuffle=True):
 
     false = data_frame[data_frame.target == 0]
     true = data_frame[data_frame.target == 1]
+    
+    print(f"Total samples: {len(data_frame)}")
+    print(f"Ratio False: {len(false) / len(data_frame)}")
+    print(f"Ratio True: {len(true) / len(data_frame)}")
 
     # split false
     train_false, test_false = train_test_split(false, test_size=0.2, shuffle=shuffle)
