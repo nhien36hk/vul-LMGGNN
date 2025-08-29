@@ -4,7 +4,7 @@ import torch
 import configs
 from models.GGCN import GGCN
 from models.LMGNN import BertGGCN
-from run import train, validate
+from run import train, validate, plot_validation_loss
 from test import test
 from utils.data.datamanager import loads as load_datasets, train_val_test_split as split_dataset
 
@@ -38,12 +38,14 @@ def run_kaggle_train(
     # Split into InputDataset wrappers using project utility
     proc_config = configs.Process()
     shuffle = proc_config.shuffle
-    train_ds, test_ds, val_ds = split_dataset(input_dataset, shuffle=shuffle)
+    train_ds, val_ds, test_ds, test_short_ds, test_long_ds = split_dataset(input_dataset, shuffle=shuffle)
 
     # Build DataLoaders
     train_loader = train_ds.get_loader(batch_size, shuffle=True)
     val_loader = val_ds.get_loader(batch_size, shuffle=False)
     test_loader = test_ds.get_loader(batch_size, shuffle=False)
+    test_short_loader = test_short_ds.get_loader(batch_size, shuffle=False)
+    test_long_loader = test_long_ds.get_loader(batch_size, shuffle=False)
 
     # Model & Optimizer
     bertggnn = configs.BertGGNN()
@@ -67,15 +69,23 @@ def run_kaggle_train(
     # Train loop
     best_f1 = 0.0
     best_path = os.path.join(output_model_dir, model_filename)
+    losses = []
 
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, optimizer, epoch)
-        acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+        loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+        losses.append(loss)
         if best_f1 < f1:
             best_f1 = f1
             torch.save(model.state_dict(), best_path)
+    plot_validation_loss(losses, os.path.join(figure_save_path, 'validation_loss.png'))
     print(f"Training finished. Best F1: {best_f1:.4f}")
 
     # Load best and evaluate on test
     best_model.load_state_dict(torch.load(best_path, map_location=device))
+    print("Testing full")
     test(best_model, device, test_loader, figure_save_path)
+    print("Testing short")
+    test(best_model, device, test_short_loader, figure_save_path)
+    print("Testing long")
+    test(best_model, device, test_long_loader, figure_save_path)

@@ -68,6 +68,10 @@ def tokenize(data_frame: pd.DataFrame):
     return data_frame[["tokens", "func"]]
 
 
+def count_tokens(code_text):
+    return len(parse.tokenizer(code_text))
+
+
 def to_files(data_frame: pd.DataFrame, out_path):
     # path = f"{self.out_path}/{self.dataset_name}/"
     os.makedirs(out_path)
@@ -91,6 +95,37 @@ def inner_join_by_index(df1, df2):
 
 def check_file_exists(file_path):
     return os.path.isfile(file_path)
+
+
+def split_long_short_test(test_true, test_false):
+    tt = test_true.copy()
+    tf = test_false.copy()
+
+    # Compute token lengths
+    tt['token_len'] = tt['func'].apply(count_tokens)
+    tf['token_len'] = tf['func'].apply(count_tokens)
+
+    # Compute Q25 and Q75 across the combined test distribution
+    all_len = pd.concat([tt['token_len'], tf['token_len']])
+    q25, q75 = all_len.quantile([0.25, 0.75])
+
+    # Filter within each class to preserve class composition
+    true_short = tt.loc[tt['token_len'] <= q25]
+    true_long = tt.loc[tt['token_len'] >= q75]
+    false_short = tf.loc[tf['token_len'] <= q25]
+    false_long = tf.loc[tf['token_len'] >= q75]
+
+    test_short = pd.concat([true_short, false_short]).reset_index(drop=True)
+    test_long = pd.concat([true_long, false_long]).reset_index(drop=True)
+
+    print(f"Split thresholds (tokens): Q25={int(q25)}, Q75={int(q75)}")
+    print(f"Test short: {len(test_short)}")
+    print(f"Test long: {len(test_long)}")
+
+    test_short_input = InputDataset(test_short)
+    test_long_input = InputDataset(test_long)
+
+    return test_short_input, test_long_input
 
 
 def train_val_test_split(data_frame: pd.DataFrame, shuffle=True, save_path=None):
@@ -128,14 +163,19 @@ def train_val_test_split(data_frame: pd.DataFrame, shuffle=True, save_path=None)
     val_input = InputDataset(val)
     test_input = InputDataset(test)
 
+    test_short_input, test_long_input = split_long_short_test(test_true, test_false)
+
     if save_path:
         os.makedirs(save_path, exist_ok=True)
         save_input_dataset(train_input, save_path, 'train.pkl')
         save_input_dataset(val_input, save_path, 'val.pkl')
         save_input_dataset(test_input, save_path, 'test.pkl')
+        save_input_dataset(test_short_input, save_path, 'test_short.pkl')
+        save_input_dataset(test_long_input, save_path, 'test_long.pkl')
         print(f"Saved split datasets to {save_path}")
 
-    return train_input, val_input, test_input
+
+    return train_input, val_input, test_input, test_short_input, test_long_input
 
 
 def get_directory_files(directory):
@@ -189,4 +229,6 @@ def load_split_datasets(path):
     train_dataset = load_input_dataset(path, 'train.pkl')
     val_dataset = load_input_dataset(path, 'val.pkl')
     test_dataset = load_input_dataset(path, 'test.pkl')
-    return train_dataset, val_dataset, test_dataset
+    test_short_dataset = load_input_dataset(path, 'test_short.pkl')
+    test_long_dataset = load_input_dataset(path, 'test_long.pkl')
+    return train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset

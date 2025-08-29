@@ -102,15 +102,15 @@ if __name__ == '__main__':
     # Check if split datasets exist, if not, load and split from scratch
     split_dir = PATHS.split
     if check_split_exists(split_dir):
-        train_dataset, val_dataset, test_dataset = load_split_datasets(split_dir)
+        train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = load_split_datasets(split_dir)
     else:
         input_dataset = loads(PATHS.input)
-        train_dataset, val_dataset, test_dataset = train_val_test_split(input_dataset, shuffle=context.shuffle, save_path=split_dir)
+        train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = train_val_test_split(input_dataset, shuffle=context.shuffle, save_path=split_dir)
     
     # Create DataLoaders
-    train_loader, val_loader, test_loader = list(
+    train_loader, val_loader, test_loader, test_short_loader, test_long_loader = list(
         map(lambda x: x.get_loader(context.batch_size, shuffle=context.shuffle),
-            [train_dataset, val_dataset, test_dataset]))
+            [train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset]))
 
     Bertggnn = configs.BertGGNN()
     gated_graph_conv_args = Bertggnn.model["gated_graph_conv_args"]
@@ -133,25 +133,31 @@ if __name__ == '__main__':
     best_f1 = 0.0
     NUM_EPOCHS = context.epochs
     PATH = args.path
-    val_losses = []  # List to store validation losses
-    
+    losses = []
     for epoch in range(1, NUM_EPOCHS + 1):
         train(model, device, train_loader, optimizer, epoch)
-        val_loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
-        val_losses.append(val_loss)  # Store validation loss
+        loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+        losses.append(loss)
         if f1 > best_f1:
             best_f1 = f1
             if PATH:
                 torch.save(model.state_dict(), PATH)
     
     # Plot validation loss after training
-    plot_validation_loss(val_losses, 'validation_loss.png')
+    plot_validation_loss(losses, 'validation_loss.png')
     
     print(f"Training finished. Best F1: {best_f1:.4f}")
 
     # Load best model and test
     if PATH:
         model_test.load_state_dict(torch.load(PATH))
+        print("Testing full")
         test(model_test, device, test_loader)
+        print("Testing short")
+        test(model_test, device, test_short_loader)
+        print("Testing long")
+        test(model_test, device, test_long_loader)
+
+
 
 

@@ -41,7 +41,7 @@
     "process" : {
         "epochs" : 200,
         "patience" : 10,
-        "batch_size" : 200,
+        "batch_size" : 230,
         "dataset_ratio" : 0.2,
         "shuffle" : true
     }
