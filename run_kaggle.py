@@ -38,7 +38,7 @@ def run_kaggle_train(
     # Split into InputDataset wrappers using project utility
     proc_config = configs.Process()
     shuffle = proc_config.shuffle
-    train_ds, val_ds, test_ds, test_short_ds, test_long_ds = split_dataset(input_dataset, shuffle=shuffle)
+    train_ds, val_ds, test_ds, test_short_ds, test_long_ds = split_dataset(input_dataset, shuffle=shuffle, save_path=output_model_dir)
 
     # Build DataLoaders
     train_loader = train_ds.get_loader(batch_size, shuffle=True)
