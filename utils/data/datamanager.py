@@ -1,4 +1,5 @@
 import glob
+import pickle
 
 import pandas as pd
 import numpy as np
@@ -35,7 +36,11 @@ def load(path, pickle_file, ratio=1):
 
 def write(data_frame: pd.DataFrame, path, file_name):
     data_frame.to_pickle(path + file_name)
+    
 
+def save_input_dataset(input_dataset, path, file_name):
+    with open(path + file_name, 'wb') as f:
+        pickle.dump(input_dataset, f)
 
 def apply_filter(data_frame: pd.DataFrame, filter_func):
     return filter_func(data_frame)
@@ -84,7 +89,11 @@ def inner_join_by_index(df1, df2):
     return pd.merge(df1, df2, left_index=True, right_index=True)
 
 
-def train_val_test_split(data_frame: pd.DataFrame, shuffle=True):
+def check_file_exists(file_path):
+    return os.path.isfile(file_path)
+
+
+def train_val_test_split(data_frame: pd.DataFrame, shuffle=True, save_path=None):
     print("Splitting Dataset")
 
     false = data_frame[data_frame.target == 0]
@@ -115,7 +124,18 @@ def train_val_test_split(data_frame: pd.DataFrame, shuffle=True):
     val = val.reset_index(drop=True)
     test = test.reset_index(drop=True)
 
-    return InputDataset(train), InputDataset(test), InputDataset(val)
+    train_input = InputDataset(train)
+    val_input = InputDataset(val)
+    test_input = InputDataset(test)
+
+    if save_path:
+        os.makedirs(save_path, exist_ok=True)
+        save_input_dataset(train_input, save_path, 'train.pkl')
+        save_input_dataset(val_input, save_path, 'val.pkl')
+        save_input_dataset(test_input, save_path, 'test.pkl')
+        print(f"Saved split datasets to {save_path}")
+
+    return train_input, val_input, test_input
 
 
 def get_directory_files(directory):
@@ -150,3 +170,23 @@ def drop(data_frame: pd.DataFrame, keys):
 def slice_frame(data_frame: pd.DataFrame, size: int):
     data_frame_size = len(data_frame)
     return data_frame.groupby(np.arange(data_frame_size) // size)
+
+
+def check_split_exists(split_dir):
+    train_file = os.path.join(split_dir, 'train.pkl')
+    test_file = os.path.join(split_dir, 'test.pkl')
+    val_file = os.path.join(split_dir, 'val.pkl')
+
+    return os.path.isfile(train_file) and os.path.isfile(test_file) and os.path.isfile(val_file)
+
+
+def load_input_dataset(path, file_name):
+    with open(path + file_name, 'rb') as f:
+        return pickle.load(f)
+
+
+def load_split_datasets(path):
+    train_dataset = load_input_dataset(path, 'train.pkl')
+    val_dataset = load_input_dataset(path, 'val.pkl')
+    test_dataset = load_input_dataset(path, 'test.pkl')
+    return train_dataset, val_dataset, test_dataset

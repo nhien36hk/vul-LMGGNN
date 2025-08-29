@@ -18,9 +18,9 @@ class GGCN(nn.Module):
         self.device = device
 
     def forward(self, data):
-        x_in, edge_index, func_text = data.x, data.edge_index, data.func
-        x_gnn_input = self.in_proj(x_in)
-        x_gnn = self.ggnn(x_gnn_input, edge_index)
+        x_in, edge_index = data.x, data.edge_index
+        # x_gnn_input = self.in_proj(x_in)
+        x_gnn = self.ggnn(x_in, edge_index)
         x_conv = self.conv(x_gnn, x_in)
         x_conv_norm = torch.sigmoid(x_conv)  # [0, 1]
 

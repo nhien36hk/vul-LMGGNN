@@ -18,7 +18,7 @@ def run_kaggle_finetune(
     epochs: int = 10,
     lr: float = 2e-5,
     weight_decay: float = 1e-4,
-    max_length: int = 512,
+    max_length: int = 128,
     model_name: str = 'microsoft/graphcodebert-base'
 ):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

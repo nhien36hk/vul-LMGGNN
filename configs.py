@@ -60,6 +60,10 @@ class Data(Config):
     def tokens(self):
         return self.get_property('tokens')
 
+    @property
+    def split(self):
+        return self.get_property('split')
+
 
 class Paths(Data):
     def __init__(self):

@@ -1,14 +1,16 @@
 import argparse
 from argparse import ArgumentParser
+import os
 import configs
 import torch
 import torch.nn.functional as F
 from models.GGCN import GGCN
-from utils.data.datamanager import loads, train_val_test_split
+from utils.data.datamanager import check_split_exists, loads, train_val_test_split, load_split_datasets
 from models.LMGNN import BertGGCN
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from test import test
 from tqdm import tqdm
+from utils.figure.plot import plot_validation_loss
 PATHS = configs.Paths()
 FILES = configs.Files()
 DEVICE = FILES.get_device()
@@ -86,7 +88,7 @@ def validate(model, device, test_loader, epoch):
         test_loss, accuracy * 100, precision * 100, recall * 100, f1 * 100))
     print()
 
-    return accuracy, precision, recall, f1
+    return test_loss, accuracy, precision, recall, f1
 
 if __name__ == '__main__':
     parser: ArgumentParser = argparse.ArgumentParser()
@@ -96,11 +98,19 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     context = configs.Process()
-    input_dataset = loads(PATHS.input)
-    # split the dataset and pass to DataLoader with batch size
+    
+    # Check if split datasets exist, if not, load and split from scratch
+    split_dir = PATHS.split
+    if check_split_exists(split_dir):
+        train_dataset, val_dataset, test_dataset = load_split_datasets(split_dir)
+    else:
+        input_dataset = loads(PATHS.input)
+        train_dataset, val_dataset, test_dataset = train_val_test_split(input_dataset, shuffle=context.shuffle, save_path=split_dir)
+    
+    # Create DataLoaders
     train_loader, val_loader, test_loader = list(
         map(lambda x: x.get_loader(context.batch_size, shuffle=context.shuffle),
-            train_val_test_split(input_dataset, shuffle=context.shuffle)))
+            [train_dataset, val_dataset, test_dataset]))
 
     Bertggnn = configs.BertGGNN()
     gated_graph_conv_args = Bertggnn.model["gated_graph_conv_args"]
@@ -123,16 +133,25 @@ if __name__ == '__main__':
     best_f1 = 0.0
     NUM_EPOCHS = context.epochs
     PATH = args.path
+    val_losses = []  # List to store validation losses
+    
     for epoch in range(1, NUM_EPOCHS + 1):
         train(model, device, train_loader, optimizer, epoch)
-        acc, precision, recall, f1 = validate(model, DEVICE, val_loader, epoch)
+        val_loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+        val_losses.append(val_loss)  # Store validation loss
         if f1 > best_f1:
             best_f1 = f1
             if PATH:
                 torch.save(model.state_dict(), PATH)
+    
+    # Plot validation loss after training
+    plot_validation_loss(val_losses, 'validation_loss.png')
+    
     print(f"Training finished. Best F1: {best_f1:.4f}")
 
-    model_test.load_state_dict(torch.load(args.path))
-    test(model_test, DEVICE, test_loader)
+    # Load best model and test
+    if PATH:
+        model_test.load_state_dict(torch.load(PATH))
+        test(model_test, device, test_loader)
 
 

@@ -13,11 +13,13 @@ def run_kaggle_train(
     input_dir: str = '/kaggle/input/lm-train/LMTrain/data/input/',
     output_model_dir: str = '/kaggle/working/trained_models/',
     model_filename: str = 'bertggcn.pt',
+    model_dir: str = '/kaggle/input/lm-train/LMTrain/data/model/',
     finetune_filename: str = 'graphcodebert_finetune.pt',
     hugging_path_filename: str = 'graphcodebert_finetune_hf',
     random_state: int = 42,
     figure_save_path: str = '/kaggle/working/figures/',
-    batch_size: int = 64,
+    batch_size: int = 12,
+    epochs: int = 30,
     k: float = 0.6,
     mode_lm: bool = True
 ):
@@ -52,13 +54,9 @@ def run_kaggle_train(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     if mode_lm:
-        finetune_file = os.path.join(output_model_dir, finetune_filename)
+        finetune_file = os.path.join(model_dir, finetune_filename)
         hugging_path = os.path.join(output_model_dir, hugging_path_filename)
-        if torch.cuda.device_count() > 1:
-            model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file)
-            model = torch.nn.DataParallel(model).to(device)
-        else:
-            model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
+        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
         best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
     else:
         model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
@@ -70,7 +68,6 @@ def run_kaggle_train(
     best_f1 = 0.0
     best_path = os.path.join(output_model_dir, model_filename)
 
-    epochs = proc_config.epochs
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, optimizer, epoch)
         acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
