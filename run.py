@@ -1,16 +1,17 @@
-import argparse
 from argparse import ArgumentParser
-import os
-import configs
+
 import torch
 import torch.nn.functional as F
-from models.GGCN import GGCN
-from utils.data.datamanager import check_split_exists, loads, train_val_test_split, load_split_datasets
-from models.LMGNN import BertGGCN
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from test import test
 from tqdm import tqdm
+
+import configs
+from models.GGCN import GGCN
+from models.LMGNN import BertGGCN
+from test import test
+from utils.data.datamanager import check_split_exists, loads, train_val_test_split, load_split_datasets
 from utils.figure.plot import plot_validation_loss
+
 PATHS = configs.Paths()
 FILES = configs.Files()
 DEVICE = FILES.get_device()
@@ -91,7 +92,7 @@ def validate(model, device, test_loader, epoch):
     return test_loss, accuracy, precision, recall, f1
 
 if __name__ == '__main__':
-    parser: ArgumentParser = argparse.ArgumentParser()
+    parser: ArgumentParser = ArgumentParser()
     parser.add_argument('-m', '--modeLM', action='store_true', help='Specify the mode for LMTrain')
     parser.add_argument('-p', '--path', default="data/model/model.pth", help='Specify the path for the model')
 
@@ -122,11 +123,11 @@ if __name__ == '__main__':
     if args.modeLM:
         finetune_file = "data/model/graphcodebert_finetune.pt"
         hugging_path = "data/model/graphcodebert_finetune_hf"
-        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to("cuda")
-        model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to("cuda")
+        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
+        model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
     else:
-        model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
-        model_test = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
+        model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model_test = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
     optimizer = torch.optim.AdamW(model.parameters(), lr=Bertggnn.learning_rate, weight_decay=Bertggnn.weight_decay)
 
@@ -152,11 +153,11 @@ if __name__ == '__main__':
     if PATH:
         model_test.load_state_dict(torch.load(PATH))
         print("Testing full")
-        test(model_test, device, test_loader)
+        test(model_test, device, test_loader, 'workspace/')
         print("Testing short")
-        test(model_test, device, test_short_loader)
+        test(model_test, device, test_short_loader, 'workspace/')
         print("Testing long")
-        test(model_test, device, test_long_loader)
+        test(model_test, device, test_long_loader, 'workspace/')
 
 
 

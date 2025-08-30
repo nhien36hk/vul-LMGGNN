@@ -39,7 +39,7 @@
         "edge_type": "Ast"
     },
     "process" : {
-        "epochs" : 200,
+        "epochs" : 100,
         "patience" : 10,
         "batch_size" : 230,
         "dataset_ratio" : 0.2,

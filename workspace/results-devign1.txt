@@ -1,0 +1,762 @@
+Splitting Dataset
+Total samples: 28767
+Ratio False: 0.5439566169569298
+Ratio True: 0.4560433830430702
+Split thresholds (tokens): Q25=83, Q75=443
+Test short: 726
+Test long: 723
+
+Training Epoch 1: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.48it/s, loss=69.168459]
+Training Epoch 1 finished. Loss: 0.691685
+Validating Epoch 1: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.27it/s, loss=8.2902]
+Valid set: Average loss: 0.6908, Accuracy: 54.49%, Precision: 47.22%, Recall: 1.36%, F1: 2.64%
+
+Training Epoch 2: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.47it/s, loss=68.934583]
+Training Epoch 2 finished. Loss: 0.689346
+Validating Epoch 2: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.22it/s, loss=8.2698]
+Valid set: Average loss: 0.6892, Accuracy: 53.95%, Precision: 32.26%, Recall: 0.79%, F1: 1.55%
+
+Training Epoch 3: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.46it/s, loss=68.802380]
+Training Epoch 3 finished. Loss: 0.688024
+Validating Epoch 3: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=8.2629]
+Valid set: Average loss: 0.6886, Accuracy: 54.82%, Precision: 53.24%, Recall: 5.89%, F1: 10.61%
+
+Training Epoch 4: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.45it/s, loss=68.467798]
+Training Epoch 4 finished. Loss: 0.684678
+Validating Epoch 4: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=8.2791]
+Valid set: Average loss: 0.6899, Accuracy: 54.42%, Precision: 50.00%, Recall: 28.30%, F1: 36.14%
+
+Training Epoch 5: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=67.846044]
+Training Epoch 5 finished. Loss: 0.678460
+Validating Epoch 5: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.19it/s, loss=8.3014]
+Valid set: Average loss: 0.6918, Accuracy: 53.91%, Precision: 48.73%, Recall: 29.13%, F1: 36.46%
+
+Training Epoch 6: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=66.883397]
+Training Epoch 6 finished. Loss: 0.668834
+Validating Epoch 6: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=8.4108]
+Valid set: Average loss: 0.7009, Accuracy: 53.12%, Precision: 48.34%, Recall: 33.36%, F1: 39.48%
+
+Training Epoch 7: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=65.393706]
+Training Epoch 7 finished. Loss: 0.653937
+Validating Epoch 7: 100%|███████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.90it/s, loss=8.6073]
+Valid set: Average loss: 0.7173, Accuracy: 51.63%, Precision: 46.65%, Recall: 40.84%, F1: 43.55%
+
+Training Epoch 8: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=63.469547]
+Training Epoch 8 finished. Loss: 0.634695
+Validating Epoch 8: 100%|███████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.93it/s, loss=8.8484]
+Valid set: Average loss: 0.7374, Accuracy: 51.09%, Precision: 46.03%, Recall: 44.85%, F1: 45.43%
+
+Training Epoch 9: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.40it/s, loss=60.949687]
+Training Epoch 9 finished. Loss: 0.609497
+Validating Epoch 9: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.08it/s, loss=9.0908]
+Valid set: Average loss: 0.7576, Accuracy: 53.12%, Precision: 47.68%, Recall: 30.31%, F1: 37.06%
+
+Training Epoch 10: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.39it/s, loss=58.698975]
+Training Epoch 10 finished. Loss: 0.586990
+Validating Epoch 10: 100%|██████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.92it/s, loss=9.4557]
+Valid set: Average loss: 0.7880, Accuracy: 52.50%, Precision: 46.71%, Recall: 32.30%, F1: 38.19%
+
+Training Epoch 11: 100%|███████████████████████████████████████████████| 100/100 [00:42<00:00,  2.33it/s, loss=55.749715]
+Training Epoch 11 finished. Loss: 0.557497
+Validating Epoch 11: 100%|█████████████████████████████████████████████████| 12/12 [00:03<00:00,  3.57it/s, loss=10.1023]
+Valid set: Average loss: 0.8419, Accuracy: 53.37%, Precision: 48.12%, Recall: 30.55%, F1: 37.37%
+
+Training Epoch 12: 100%|███████████████████████████████████████████████| 100/100 [00:44<00:00,  2.27it/s, loss=53.033055]
+Training Epoch 12 finished. Loss: 0.530331
+Validating Epoch 12: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=10.9074]
+Valid set: Average loss: 0.9089, Accuracy: 51.12%, Precision: 46.19%, Recall: 44.90%, F1: 45.54%
+
+Training Epoch 13: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.40it/s, loss=51.488859]
+Training Epoch 13 finished. Loss: 0.514889
+Validating Epoch 13: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=11.4953]
+Valid set: Average loss: 0.9579, Accuracy: 51.99%, Precision: 46.40%, Recall: 32.17%, F1: 38.00%
+
+Training Epoch 14:  27%|████████████▉                                   | 27/100 [00:11<00:30,  2.39it/s, loss=12.771206]
+
+Training Epoch 14: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.39it/s, loss=49.054725]
+Training Epoch 14 finished. Loss: 0.490547
+Validating Epoch 14: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=12.1722]
+Valid set: Average loss: 1.0144, Accuracy: 52.21%, Precision: 46.93%, Recall: 33.31%, F1: 38.96%
+
+Training Epoch 15: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=46.966620]
+Training Epoch 15 finished. Loss: 0.469666
+Validating Epoch 15: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=12.9481]
+Valid set: Average loss: 1.0790, Accuracy: 51.88%, Precision: 47.06%, Recall: 39.18%, F1: 42.76%
+
+Training Epoch 16: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=45.965042]
+Training Epoch 16 finished. Loss: 0.459650
+Validating Epoch 16: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.05it/s, loss=13.8112]
+Valid set: Average loss: 1.1509, Accuracy: 51.20%, Precision: 46.42%, Recall: 40.88%, F1: 43.47%
+
+Training Epoch 17: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=44.414598]
+Training Epoch 17 finished. Loss: 0.444146
+Validating Epoch 17: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.18it/s, loss=15.0663]
+Valid set: Average loss: 1.2555, Accuracy: 50.87%, Precision: 46.54%, Recall: 51.27%, F1: 48.79%
+
+Training Epoch 18: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=42.886215]
+Training Epoch 18 finished. Loss: 0.428862
+Validating Epoch 18: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.01it/s, loss=15.2258]
+Valid set: Average loss: 1.2688, Accuracy: 51.88%, Precision: 46.66%, Recall: 37.70%, F1: 41.70%
+
+Training Epoch 19: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=41.886204]
+Training Epoch 19 finished. Loss: 0.418862
+Validating Epoch 19: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.00it/s, loss=16.4839]
+Valid set: Average loss: 1.3737, Accuracy: 51.30%, Precision: 45.83%, Recall: 38.54%, F1: 41.87%
+
+Training Epoch 20: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=41.312972]
+Training Epoch 20 finished. Loss: 0.413130
+Validating Epoch 20: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.10it/s, loss=17.1663]
+Valid set: Average loss: 1.4305, Accuracy: 50.58%, Precision: 45.54%, Recall: 42.14%, F1: 43.78%
+
+Training Epoch 21: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=39.871359]
+Training Epoch 21 finished. Loss: 0.398714
+Validating Epoch 21: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.22it/s, loss=17.9406]
+Valid set: Average loss: 1.4951, Accuracy: 52.10%, Precision: 46.46%, Recall: 32.80%, F1: 38.45%
+
+Training Epoch 22: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=39.228783]
+Training Epoch 22 finished. Loss: 0.392288
+Validating Epoch 22: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=18.8123]
+Valid set: Average loss: 1.5677, Accuracy: 50.43%, Precision: 45.73%, Recall: 47.26%, F1: 46.48%
+
+Training Epoch 23: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=38.846119]
+Training Epoch 23 finished. Loss: 0.388461
+Validating Epoch 23: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.08it/s, loss=18.8518]
+Valid set: Average loss: 1.5710, Accuracy: 51.78%, Precision: 46.16%, Recall: 34.90%, F1: 39.75%
+
+Training Epoch 24: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=38.007286]
+Training Epoch 24 finished. Loss: 0.380073
+Validating Epoch 24: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.08it/s, loss=19.1524]
+Valid set: Average loss: 1.5960, Accuracy: 51.56%, Precision: 46.42%, Recall: 41.29%, F1: 43.71%
+
+Training Epoch 25: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=37.346558]
+Training Epoch 25 finished. Loss: 0.373466
+Validating Epoch 25: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.04it/s, loss=20.3042]
+Valid set: Average loss: 1.6920, Accuracy: 52.50%, Precision: 47.43%, Recall: 38.05%, F1: 42.22%
+
+Training Epoch 26: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=36.612064]
+Training Epoch 26 finished. Loss: 0.366121
+Validating Epoch 26: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.06it/s, loss=21.1939]
+Valid set: Average loss: 1.7662, Accuracy: 51.88%, Precision: 47.14%, Recall: 49.24%, F1: 48.17%
+
+Training Epoch 27: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=36.284281]
+Training Epoch 27 finished. Loss: 0.362843
+Validating Epoch 27: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.20it/s, loss=20.7581]
+Valid set: Average loss: 1.7298, Accuracy: 52.21%, Precision: 47.33%, Recall: 42.93%, F1: 45.02%
+
+Training Epoch 28: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=36.292132]
+Training Epoch 28 finished. Loss: 0.362921
+Validating Epoch 28: 100%|█████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.94it/s, loss=20.8115]
+Valid set: Average loss: 1.7343, Accuracy: 51.99%, Precision: 47.54%, Recall: 47.35%, F1: 47.44%
+
+Training Epoch 29: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=34.895398]
+Training Epoch 29 finished. Lo
+(venv) nhien36hk@nhiennnn:~/Documents/Intern-InsectLab/Project-XAI/LMTrain$ python run.py
+Training Epoch 1: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.48it/s, loss=69.168459]
+Training Epoch 1 finished. Loss: 0.691685
+Validating Epoch 1: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.27it/s, loss=8.2902]
+Valid set: Average loss: 0.6908, Accuracy: 54.49%, Precision: 47.22%, Recall: 1.36%, F1: 2.64%
+
+Training Epoch 2: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.47it/s, loss=68.934583]
+Training Epoch 2 finished. Loss: 0.689346
+Validating Epoch 2: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.22it/s, loss=8.2698]
+Valid set: Average loss: 0.6892, Accuracy: 53.95%, Precision: 32.26%, Recall: 0.79%, F1: 1.55%
+
+Training Epoch 3: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.46it/s, loss=68.802380]
+Training Epoch 3 finished. Loss: 0.688024
+Validating Epoch 3: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=8.2629]
+Valid set: Average loss: 0.6886, Accuracy: 54.82%, Precision: 53.24%, Recall: 5.89%, F1: 10.61%
+
+Training Epoch 4: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.45it/s, loss=68.467798]
+Training Epoch 4 finished. Loss: 0.684678
+Validating Epoch 4: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=8.2791]
+Valid set: Average loss: 0.6899, Accuracy: 54.42%, Precision: 50.00%, Recall: 28.30%, F1: 36.14%
+
+Training Epoch 5: 100%|████████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=67.846044]
+Training Epoch 5 finished. Loss: 0.678460
+Validating Epoch 5: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.19it/s, loss=8.3014]
+Valid set: Average loss: 0.6918, Accuracy: 53.91%, Precision: 48.73%, Recall: 29.13%, F1: 36.46%
+
+Training Epoch 6: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=66.883397]
+Training Epoch 6 finished. Loss: 0.668834
+Validating Epoch 6: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=8.4108]
+Valid set: Average loss: 0.7009, Accuracy: 53.12%, Precision: 48.34%, Recall: 33.36%, F1: 39.48%
+
+Training Epoch 7: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=65.393706]
+Training Epoch 7 finished. Loss: 0.653937
+Validating Epoch 7: 100%|███████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.90it/s, loss=8.6073]
+Valid set: Average loss: 0.7173, Accuracy: 51.63%, Precision: 46.65%, Recall: 40.84%, F1: 43.55%
+
+Training Epoch 8: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=63.469547]
+Training Epoch 8 finished. Loss: 0.634695
+Validating Epoch 8: 100%|███████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.93it/s, loss=8.8484]
+Valid set: Average loss: 0.7374, Accuracy: 51.09%, Precision: 46.03%, Recall: 44.85%, F1: 45.43%
+
+Training Epoch 9: 100%|████████████████████████████████████████████████| 100/100 [00:41<00:00,  2.40it/s, loss=60.949687]
+Training Epoch 9 finished. Loss: 0.609497
+Validating Epoch 9: 100%|███████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.08it/s, loss=9.0908]
+Valid set: Average loss: 0.7576, Accuracy: 53.12%, Precision: 47.68%, Recall: 30.31%, F1: 37.06%
+
+Training Epoch 10: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.39it/s, loss=58.698975]
+Training Epoch 10 finished. Loss: 0.586990
+Validating Epoch 10: 100%|██████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.92it/s, loss=9.4557]
+Valid set: Average loss: 0.7880, Accuracy: 52.50%, Precision: 46.71%, Recall: 32.30%, F1: 38.19%
+
+Training Epoch 11: 100%|███████████████████████████████████████████████| 100/100 [00:42<00:00,  2.33it/s, loss=55.749715]
+Training Epoch 11 finished. Loss: 0.557497
+Validating Epoch 11: 100%|█████████████████████████████████████████████████| 12/12 [00:03<00:00,  3.57it/s, loss=10.1023]
+Valid set: Average loss: 0.8419, Accuracy: 53.37%, Precision: 48.12%, Recall: 30.55%, F1: 37.37%
+
+Training Epoch 12: 100%|███████████████████████████████████████████████| 100/100 [00:44<00:00,  2.27it/s, loss=53.033055]
+Training Epoch 12 finished. Loss: 0.530331
+Validating Epoch 12: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=10.9074]
+Valid set: Average loss: 0.9089, Accuracy: 51.12%, Precision: 46.19%, Recall: 44.90%, F1: 45.54%
+
+Training Epoch 13: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.40it/s, loss=51.488859]
+Training Epoch 13 finished. Loss: 0.514889
+Validating Epoch 13: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=11.4953]
+Valid set: Average loss: 0.9579, Accuracy: 51.99%, Precision: 46.40%, Recall: 32.17%, F1: 38.00%
+
+Training Epoch 14: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.39it/s, loss=49.054725]
+Training Epoch 14 finished. Loss: 0.490547
+Validating Epoch 14: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=12.1722]
+Valid set: Average loss: 1.0144, Accuracy: 52.21%, Precision: 46.93%, Recall: 33.31%, F1: 38.96%
+
+Training Epoch 15: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=46.966620]
+Training Epoch 15 finished. Loss: 0.469666
+Validating Epoch 15: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=12.9481]
+Valid set: Average loss: 1.0790, Accuracy: 51.88%, Precision: 47.06%, Recall: 39.18%, F1: 42.76%
+
+Training Epoch 16: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=45.965042]
+Training Epoch 16 finished. Loss: 0.459650
+Validating Epoch 16: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.05it/s, loss=13.8112]
+Valid set: Average loss: 1.1509, Accuracy: 51.20%, Precision: 46.42%, Recall: 40.88%, F1: 43.47%
+
+Training Epoch 17: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=44.414598]
+Training Epoch 17 finished. Loss: 0.444146
+Validating Epoch 17: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.18it/s, loss=15.0663]
+Valid set: Average loss: 1.2555, Accuracy: 50.87%, Precision: 46.54%, Recall: 51.27%, F1: 48.79%
+
+Training Epoch 18: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=42.886215]
+Training Epoch 18 finished. Loss: 0.428862
+Validating Epoch 18: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.01it/s, loss=15.2258]
+Valid set: Average loss: 1.2688, Accuracy: 51.88%, Precision: 46.66%, Recall: 37.70%, F1: 41.70%
+
+Training Epoch 19: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=41.886204]
+Training Epoch 19 finished. Loss: 0.418862
+Validating Epoch 19: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.00it/s, loss=16.4839]
+Valid set: Average loss: 1.3737, Accuracy: 51.30%, Precision: 45.83%, Recall: 38.54%, F1: 41.87%
+
+Training Epoch 20: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=41.312972]
+Training Epoch 20 finished. Loss: 0.413130
+Validating Epoch 20: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.10it/s, loss=17.1663]
+Valid set: Average loss: 1.4305, Accuracy: 50.58%, Precision: 45.54%, Recall: 42.14%, F1: 43.78%
+
+Training Epoch 21: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=39.871359]
+Training Epoch 21 finished. Loss: 0.398714
+Validating Epoch 21: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.22it/s, loss=17.9406]
+Valid set: Average loss: 1.4951, Accuracy: 52.10%, Precision: 46.46%, Recall: 32.80%, F1: 38.45%
+
+Training Epoch 22: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=39.228783]
+Training Epoch 22 finished. Loss: 0.392288
+Validating Epoch 22: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=18.8123]
+Valid set: Average loss: 1.5677, Accuracy: 50.43%, Precision: 45.73%, Recall: 47.26%, F1: 46.48%
+
+Training Epoch 23: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=38.846119]
+Training Epoch 23 finished. Loss: 0.388461
+Validating Epoch 23: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.08it/s, loss=18.8518]
+Valid set: Average loss: 1.5710, Accuracy: 51.78%, Precision: 46.16%, Recall: 34.90%, F1: 39.75%
+
+Training Epoch 24: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=38.007286]
+Training Epoch 24 finished. Loss: 0.380073
+Validating Epoch 24: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.08it/s, loss=19.1524]
+Valid set: Average loss: 1.5960, Accuracy: 51.56%, Precision: 46.42%, Recall: 41.29%, F1: 43.71%
+
+Training Epoch 25: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=37.346558]
+Training Epoch 25 finished. Loss: 0.373466
+Validating Epoch 25: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.04it/s, loss=20.3042]
+Valid set: Average loss: 1.6920, Accuracy: 52.50%, Precision: 47.43%, Recall: 38.05%, F1: 42.22%
+
+Training Epoch 26: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=36.612064]
+Training Epoch 26 finished. Loss: 0.366121
+Validating Epoch 26: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.06it/s, loss=21.1939]
+Valid set: Average loss: 1.7662, Accuracy: 51.88%, Precision: 47.14%, Recall: 49.24%, F1: 48.17%
+
+Training Epoch 27: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=36.284281]
+Training Epoch 27 finished. Loss: 0.362843
+Validating Epoch 27: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.20it/s, loss=20.7581]
+Valid set: Average loss: 1.7298, Accuracy: 52.21%, Precision: 47.33%, Recall: 42.93%, F1: 45.02%
+
+Training Epoch 28: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=36.292132]
+Training Epoch 28 finished. Loss: 0.362921
+Validating Epoch 28: 100%|█████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.94it/s, loss=20.8115]
+Valid set: Average loss: 1.7343, Accuracy: 51.99%, Precision: 47.54%, Recall: 47.35%, F1: 47.44%
+
+Training Epoch 29: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=34.895398]
+Training Epoch 29 finished. Loss: 0.348954
+Validating Epoch 29: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.10it/s, loss=22.7910]
+Valid set: Average loss: 1.8993, Accuracy: 52.28%, Precision: 48.09%, Recall: 49.72%, F1: 48.89%
+
+Training Epoch 30: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=34.370495]
+Training Epoch 30 finished. Loss: 0.343705
+Validating Epoch 30: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.04it/s, loss=23.6026]
+Valid set: Average loss: 1.9669, Accuracy: 53.22%, Precision: 48.17%, Recall: 38.76%, F1: 42.95%
+
+Training Epoch 31: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=33.948887]
+Training Epoch 31 finished. Loss: 0.339489
+Validating Epoch 31: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=24.9104]
+Valid set: Average loss: 2.0759, Accuracy: 54.17%, Precision: 49.55%, Recall: 35.08%, F1: 41.08%
+
+Training Epoch 32: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=34.495523]
+Training Epoch 32 finished. Loss: 0.344955
+Validating Epoch 32: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.06it/s, loss=23.5577]
+Valid set: Average loss: 1.9631, Accuracy: 53.41%, Precision: 48.50%, Recall: 36.01%, F1: 41.33%
+
+Training Epoch 33: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=33.402674]
+Training Epoch 33 finished. Loss: 0.334027
+Validating Epoch 33: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.02it/s, loss=24.4666]
+Valid set: Average loss: 2.0389, Accuracy: 54.02%, Precision: 49.91%, Recall: 46.25%, F1: 48.01%
+
+Training Epoch 34: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=32.253155]
+Training Epoch 34 finished. Loss: 0.322532
+Validating Epoch 34: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.22it/s, loss=26.2356]
+Valid set: Average loss: 2.1863, Accuracy: 53.51%, Precision: 48.43%, Recall: 36.95%, F1: 41.92%
+
+Training Epoch 35: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=32.542971]
+Training Epoch 35 finished. Loss: 0.325430
+Validating Epoch 35: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.10it/s, loss=26.4362]
+Valid set: Average loss: 2.2030, Accuracy: 53.77%, Precision: 49.58%, Recall: 46.84%, F1: 48.17%
+
+Training Epoch 36: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=32.548808]
+Training Epoch 36 finished. Loss: 0.325488
+Validating Epoch 36: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=26.2083]
+Valid set: Average loss: 2.1840, Accuracy: 53.73%, Precision: 49.01%, Recall: 45.61%, F1: 47.25%
+
+Training Epoch 37: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=31.241156]
+Training Epoch 37 finished. Loss: 0.312412
+Validating Epoch 37: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.06it/s, loss=28.7148]
+Valid set: Average loss: 2.3929, Accuracy: 53.95%, Precision: 49.55%, Recall: 43.22%, F1: 46.17%
+
+Training Epoch 38: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=30.967521]
+Training Epoch 38 finished. Loss: 0.309675
+Validating Epoch 38: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.26it/s, loss=29.6098]
+Valid set: Average loss: 2.4675, Accuracy: 52.72%, Precision: 47.85%, Recall: 43.31%, F1: 45.47%
+
+Training Epoch 39: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=30.699527]
+Training Epoch 39 finished. Loss: 0.306995
+Validating Epoch 39: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.19it/s, loss=30.0813]
+Valid set: Average loss: 2.5068, Accuracy: 53.26%, Precision: 49.02%, Recall: 43.30%, F1: 45.98%
+
+Training Epoch 40: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=30.685581]
+Training Epoch 40 finished. Loss: 0.306856
+Validating Epoch 40: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.18it/s, loss=32.2586]
+Valid set: Average loss: 2.6882, Accuracy: 53.41%, Precision: 48.90%, Recall: 47.82%, F1: 48.35%
+
+Training Epoch 41: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=30.156280]
+Training Epoch 41 finished. Loss: 0.301563
+Validating Epoch 41: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=31.2019]
+Valid set: Average loss: 2.6002, Accuracy: 53.26%, Precision: 48.87%, Recall: 48.10%, F1: 48.48%
+
+Training Epoch 42: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=29.621472]
+Training Epoch 42 finished. Loss: 0.296215
+Validating Epoch 42: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.09it/s, loss=31.2020]
+Valid set: Average loss: 2.6002, Accuracy: 55.22%, Precision: 50.87%, Recall: 41.87%, F1: 45.93%
+
+Training Epoch 43: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=29.209918]
+Training Epoch 43 finished. Loss: 0.292099
+Validating Epoch 43: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=35.9222]
+Valid set: Average loss: 2.9935, Accuracy: 53.08%, Precision: 48.77%, Recall: 46.96%, F1: 47.85%
+
+Training Epoch 44: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=28.979902]
+Training Epoch 44 finished. Loss: 0.289799
+Validating Epoch 44: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.02it/s, loss=34.3245]
+Valid set: Average loss: 2.8604, Accuracy: 53.95%, Precision: 49.83%, Recall: 47.51%, F1: 48.65%
+
+Training Epoch 45: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=28.409858]
+Training Epoch 45 finished. Loss: 0.284099
+Validating Epoch 45: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.05it/s, loss=37.2846]
+Valid set: Average loss: 3.1070, Accuracy: 53.66%, Precision: 49.08%, Recall: 48.65%, F1: 48.86%
+
+Training Epoch 46: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=28.950052]
+Training Epoch 46 finished. Loss: 0.289501
+Validating Epoch 46: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=34.4527]
+Valid set: Average loss: 2.8711, Accuracy: 53.48%, Precision: 48.36%, Recall: 46.10%, F1: 47.20%
+
+Training Epoch 47: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=30.215108]
+Training Epoch 47 finished. Loss: 0.302151
+Validating Epoch 47: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.24it/s, loss=34.1707]
+Valid set: Average loss: 2.8476, Accuracy: 52.43%, Precision: 47.58%, Recall: 46.17%, F1: 46.86%
+
+Training Epoch 48: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=28.480770]
+Training Epoch 48 finished. Loss: 0.284808
+Validating Epoch 48: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=36.8539]
+Valid set: Average loss: 3.0712, Accuracy: 53.48%, Precision: 49.29%, Recall: 49.68%, F1: 49.49%
+
+Training Epoch 49: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=27.470102]
+Training Epoch 49 finished. Loss: 0.274701
+Validating Epoch 49: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=37.0256]
+Valid set: Average loss: 3.0855, Accuracy: 54.71%, Precision: 50.35%, Recall: 46.26%, F1: 48.22%
+
+Training Epoch 50: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=27.683914]
+Training Epoch 50 finished. Loss: 0.276839
+Validating Epoch 50: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=37.6479]
+Valid set: Average loss: 3.1373, Accuracy: 54.60%, Precision: 50.20%, Recall: 49.21%, F1: 49.70%
+
+Training Epoch 51: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=26.860972]
+Training Epoch 51 finished. Loss: 0.268610
+Validating Epoch 51: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.20it/s, loss=37.1504]
+Valid set: Average loss: 3.0959, Accuracy: 53.73%, Precision: 49.12%, Recall: 46.58%, F1: 47.81%
+
+Training Epoch 52: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=27.544547]
+Training Epoch 52 finished. Loss: 0.275445
+Validating Epoch 52: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.05it/s, loss=37.3631]
+Valid set: Average loss: 3.1136, Accuracy: 53.04%, Precision: 48.74%, Recall: 50.51%, F1: 49.61%
+
+Training Epoch 53: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=26.634338]
+Training Epoch 53 finished. Loss: 0.266343
+Validating Epoch 53: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.05it/s, loss=39.6171]
+Valid set: Average loss: 3.3014, Accuracy: 52.79%, Precision: 48.18%, Recall: 48.37%, F1: 48.27%
+
+Training Epoch 54: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=26.614734]
+Training Epoch 54 finished. Loss: 0.266147
+Validating Epoch 54: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=41.0809]
+Valid set: Average loss: 3.4234, Accuracy: 54.38%, Precision: 50.20%, Recall: 48.58%, F1: 49.38%
+
+Training Epoch 55: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=26.465916]
+Training Epoch 55 finished. Loss: 0.264659
+Validating Epoch 55: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.11it/s, loss=39.1351]
+Valid set: Average loss: 3.2613, Accuracy: 53.44%, Precision: 48.69%, Recall: 47.57%, F1: 48.12%
+
+Training Epoch 56: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=26.392538]
+Training Epoch 56 finished. Loss: 0.263925
+Validating Epoch 56: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.19it/s, loss=37.3778]
+Valid set: Average loss: 3.1148, Accuracy: 54.78%, Precision: 50.38%, Recall: 42.36%, F1: 46.02%
+
+Training Epoch 57: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=25.626459]
+Training Epoch 57 finished. Loss: 0.256265
+Validating Epoch 57: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=41.6383]
+Valid set: Average loss: 3.4699, Accuracy: 53.99%, Precision: 49.62%, Recall: 46.07%, F1: 47.78%
+
+Training Epoch 58: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=25.678258]
+Training Epoch 58 finished. Loss: 0.256783
+Validating Epoch 58: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=40.2996]
+Valid set: Average loss: 3.3583, Accuracy: 55.29%, Precision: 50.72%, Recall: 44.96%, F1: 47.67%
+
+Training Epoch 59: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.45it/s, loss=26.067509]
+Training Epoch 59 finished. Loss: 0.260675
+Validating Epoch 59: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=45.2400]
+Valid set: Average loss: 3.7700, Accuracy: 52.86%, Precision: 48.42%, Recall: 53.70%, F1: 50.92%
+
+Training Epoch 60: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=25.240915]
+Training Epoch 60 finished. Loss: 0.252409
+Validating Epoch 60: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=41.5228]
+Valid set: Average loss: 3.4602, Accuracy: 54.24%, Precision: 49.82%, Recall: 45.04%, F1: 47.31%
+
+Training Epoch 61: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=25.795879]
+Training Epoch 61 finished. Loss: 0.257959
+Validating Epoch 61: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=40.9755]
+Valid set: Average loss: 3.4146, Accuracy: 54.96%, Precision: 50.51%, Recall: 43.30%, F1: 46.63%
+
+Training Epoch 62: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=24.761831]
+Training Epoch 62 finished. Loss: 0.247618
+Validating Epoch 62: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.20it/s, loss=49.6855]
+Valid set: Average loss: 4.1405, Accuracy: 52.36%, Precision: 47.80%, Recall: 56.56%, F1: 51.81%
+
+Training Epoch 63: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=25.527835]
+Training Epoch 63 finished. Loss: 0.255278
+Validating Epoch 63: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.20it/s, loss=46.8250]
+Valid set: Average loss: 3.9021, Accuracy: 53.22%, Precision: 48.96%, Recall: 54.04%, F1: 51.37%
+
+Training Epoch 64: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=24.498411]
+Training Epoch 64 finished. Loss: 0.244984
+Validating Epoch 64: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=47.9283]
+Valid set: Average loss: 3.9940, Accuracy: 53.33%, Precision: 48.89%, Recall: 52.31%, F1: 50.54%
+
+Training Epoch 65: 100%|███████████████████████████████████████████████| 100/100 [00:40<00:00,  2.44it/s, loss=24.208540]
+Training Epoch 65 finished. Loss: 0.242085
+Validating Epoch 65: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=45.6388]
+Valid set: Average loss: 3.8032, Accuracy: 53.88%, Precision: 49.11%, Recall: 50.56%, F1: 49.82%
+
+Training Epoch 66: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=24.296146]
+Training Epoch 66 finished. Loss: 0.242961
+Validating Epoch 66: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.19it/s, loss=45.9961]
+Valid set: Average loss: 3.8330, Accuracy: 54.09%, Precision: 49.61%, Recall: 45.87%, F1: 47.67%
+
+Training Epoch 67: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.745418]
+Training Epoch 67 finished. Loss: 0.237454
+Validating Epoch 67: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.11it/s, loss=42.8877]
+Valid set: Average loss: 3.5740, Accuracy: 52.68%, Precision: 48.59%, Recall: 47.60%, F1: 48.09%
+
+Training Epoch 68: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.498609]
+Training Epoch 68 finished. Loss: 0.234986
+Validating Epoch 68: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=48.9203]
+Valid set: Average loss: 4.0767, Accuracy: 53.33%, Precision: 48.94%, Recall: 51.19%, F1: 50.04%
+
+Training Epoch 69: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.521218]
+Training Epoch 69 finished. Loss: 0.235212
+Validating Epoch 69: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=45.2397]
+Valid set: Average loss: 3.7700, Accuracy: 54.20%, Precision: 49.37%, Recall: 47.32%, F1: 48.32%
+
+Training Epoch 70: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=23.381679]
+Training Epoch 70 finished. Loss: 0.233817
+Validating Epoch 70: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.11it/s, loss=53.9593]
+Valid set: Average loss: 4.4966, Accuracy: 53.04%, Precision: 48.66%, Recall: 54.93%, F1: 51.61%
+
+Training Epoch 71: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.851893]
+Training Epoch 71 finished. Loss: 0.238519
+Validating Epoch 71: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.17it/s, loss=47.7864]
+Valid set: Average loss: 3.9822, Accuracy: 53.37%, Precision: 49.06%, Recall: 51.51%, F1: 50.25%
+
+Training Epoch 72: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.514805]
+Training Epoch 72 finished. Loss: 0.235148
+Validating Epoch 72: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.02it/s, loss=47.3120]
+Valid set: Average loss: 3.9427, Accuracy: 54.35%, Precision: 49.82%, Recall: 43.63%, F1: 46.52%
+
+Training Epoch 73: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.938433]
+Training Epoch 73 finished. Loss: 0.239384
+Validating Epoch 73: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.13it/s, loss=46.2139]
+Valid set: Average loss: 3.8512, Accuracy: 54.28%, Precision: 50.17%, Recall: 47.08%, F1: 48.57%
+
+Training Epoch 74: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.208252]
+Training Epoch 74 finished. Loss: 0.232083
+Validating Epoch 74: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.04it/s, loss=46.2045]
+Valid set: Average loss: 3.8504, Accuracy: 54.71%, Precision: 50.42%, Recall: 47.54%, F1: 48.94%
+
+Training Epoch 75: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.710711]
+Training Epoch 75 finished. Loss: 0.227107
+Validating Epoch 75: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=49.1165]
+Valid set: Average loss: 4.0930, Accuracy: 53.62%, Precision: 49.27%, Recall: 45.37%, F1: 47.24%
+
+Training Epoch 76: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=23.308189]
+Training Epoch 76 finished. Loss: 0.233082
+Validating Epoch 76: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.16it/s, loss=47.8490]
+Valid set: Average loss: 3.9874, Accuracy: 53.95%, Precision: 49.28%, Recall: 46.49%, F1: 47.85%
+
+Training Epoch 77: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.44it/s, loss=23.044530]
+Training Epoch 77 finished. Loss: 0.230445
+Validating Epoch 77: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.15it/s, loss=46.0566]
+Valid set: Average loss: 3.8380, Accuracy: 53.99%, Precision: 49.24%, Recall: 46.81%, F1: 47.99%
+
+Training Epoch 78: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.41it/s, loss=22.785096]
+Training Epoch 78 finished. Loss: 0.227851
+Validating Epoch 78: 100%|█████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.97it/s, loss=46.5427]
+Valid set: Average loss: 3.8786, Accuracy: 53.41%, Precision: 49.08%, Recall: 48.61%, F1: 48.85%
+
+Training Epoch 79: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.512782]
+Training Epoch 79 finished. Loss: 0.225128
+Validating Epoch 79: 100%|█████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.98it/s, loss=53.7058]
+Valid set: Average loss: 4.4755, Accuracy: 52.86%, Precision: 48.11%, Recall: 49.92%, F1: 49.00%
+
+Training Epoch 80: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.537695]
+Training Epoch 80 finished. Loss: 0.225377
+Validating Epoch 80: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.09it/s, loss=54.1623]
+Valid set: Average loss: 4.5135, Accuracy: 54.24%, Precision: 49.64%, Recall: 49.36%, F1: 49.50%
+
+Training Epoch 81: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.478551]
+Training Epoch 81 finished. Loss: 0.224786
+Validating Epoch 81: 100%|█████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.92it/s, loss=51.6345]
+Valid set: Average loss: 4.3029, Accuracy: 53.59%, Precision: 49.11%, Recall: 50.72%, F1: 49.90%
+
+Training Epoch 82: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.084513]
+Training Epoch 82 finished. Loss: 0.220845
+Validating Epoch 82: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.05it/s, loss=60.7644]
+Valid set: Average loss: 5.0637, Accuracy: 53.44%, Precision: 48.98%, Recall: 55.49%, F1: 52.03%
+
+Training Epoch 83: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.077841]
+Training Epoch 83 finished. Loss: 0.220778
+Validating Epoch 83: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.18it/s, loss=51.2008]
+Valid set: Average loss: 4.2667, Accuracy: 53.44%, Precision: 48.72%, Recall: 45.58%, F1: 47.10%
+
+Training Epoch 84: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.601212]
+Training Epoch 84 finished. Loss: 0.226012
+Validating Epoch 84: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=53.2402]
+Valid set: Average loss: 4.4367, Accuracy: 54.24%, Precision: 50.13%, Recall: 47.47%, F1: 48.76%
+
+Training Epoch 85: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.259467]
+Training Epoch 85 finished. Loss: 0.222595
+Validating Epoch 85: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.12it/s, loss=49.2390]
+Valid set: Average loss: 4.1032, Accuracy: 55.00%, Precision: 50.08%, Recall: 49.92%, F1: 50.00%
+
+Training Epoch 86: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=21.816406]
+Training Epoch 86 finished. Loss: 0.218164
+Validating Epoch 86: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=54.9718]
+Valid set: Average loss: 4.5810, Accuracy: 54.46%, Precision: 50.08%, Recall: 51.79%, F1: 50.92%
+
+Training Epoch 87: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=21.989589]
+Training Epoch 87 finished. Loss: 0.219896
+Validating Epoch 87: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=53.6931]
+Valid set: Average loss: 4.4744, Accuracy: 53.99%, Precision: 49.19%, Recall: 48.72%, F1: 48.95%
+
+Training Epoch 88: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=21.851445]
+Training Epoch 88 finished. Loss: 0.218514
+Validating Epoch 88: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=47.5150]
+Valid set: Average loss: 3.9596, Accuracy: 54.49%, Precision: 50.04%, Recall: 48.13%, F1: 49.07%
+
+Training Epoch 89: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.022979]
+Training Epoch 89 finished. Loss: 0.220230
+Validating Epoch 89: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.10it/s, loss=55.3024]
+Valid set: Average loss: 4.6085, Accuracy: 54.78%, Precision: 50.61%, Recall: 49.49%, F1: 50.04%
+
+Training Epoch 90: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=21.677619]
+Training Epoch 90 finished. Loss: 0.216776
+Validating Epoch 90: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=55.9149]
+Valid set: Average loss: 4.6596, Accuracy: 54.31%, Precision: 50.39%, Recall: 45.75%, F1: 47.96%
+
+Training Epoch 91: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=21.982978]
+Training Epoch 91 finished. Loss: 0.219830
+Validating Epoch 91: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.06it/s, loss=48.8646]
+Valid set: Average loss: 4.0720, Accuracy: 54.31%, Precision: 50.19%, Recall: 42.06%, F1: 45.76%
+
+Training Epoch 92: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=21.364963]
+Training Epoch 92 finished. Loss: 0.213650
+Validating Epoch 92: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.07it/s, loss=50.0743]
+Valid set: Average loss: 4.1729, Accuracy: 55.58%, Precision: 50.96%, Recall: 44.91%, F1: 47.74%
+
+Training Epoch 93: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=21.149476]
+Training Epoch 93 finished. Loss: 0.211495
+Validating Epoch 93: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.11it/s, loss=54.6367]
+Valid set: Average loss: 4.5531, Accuracy: 54.38%, Precision: 49.72%, Recall: 49.52%, F1: 49.62%
+
+Training Epoch 94: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=21.036985]
+Training Epoch 94 finished. Loss: 0.210370
+Validating Epoch 94: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=54.9652]
+Valid set: Average loss: 4.5804, Accuracy: 54.42%, Precision: 49.96%, Recall: 49.64%, F1: 49.80%
+
+Training Epoch 95: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.091726]
+Training Epoch 95 finished. Loss: 0.220917
+Validating Epoch 95: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.11it/s, loss=52.7280]
+Valid set: Average loss: 4.3940, Accuracy: 54.49%, Precision: 50.24%, Recall: 50.00%, F1: 50.12%
+
+Training Epoch 96: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=22.206198]
+Training Epoch 96 finished. Loss: 0.222062
+Validating Epoch 96: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.01it/s, loss=49.4435]
+Valid set: Average loss: 4.1203, Accuracy: 55.18%, Precision: 50.98%, Recall: 45.51%, F1: 48.09%
+
+Training Epoch 97: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=21.916120]
+Training Epoch 97 finished. Loss: 0.219161
+Validating Epoch 97: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.09it/s, loss=53.3267]
+Valid set: Average loss: 4.4439, Accuracy: 54.78%, Precision: 50.34%, Recall: 52.98%, F1: 51.63%
+
+Training Epoch 98: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.43it/s, loss=20.844584]
+Training Epoch 98 finished. Loss: 0.208446
+Validating Epoch 98: 100%|█████████████████████████████████████████████████| 12/12 [00:02<00:00,  5.92it/s, loss=55.9355]
+Valid set: Average loss: 4.6613, Accuracy: 53.99%, Precision: 49.59%, Recall: 52.82%, F1: 51.15%
+
+Training Epoch 99: 100%|███████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=20.275314]
+Training Epoch 99 finished. Loss: 0.202753
+Validating Epoch 99: 100%|█████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.03it/s, loss=50.3033]
+Valid set: Average loss: 4.1919, Accuracy: 53.91%, Precision: 49.66%, Recall: 46.52%, F1: 48.04%
+
+Training Epoch 100: 100%|██████████████████████████████████████████████| 100/100 [00:41<00:00,  2.42it/s, loss=20.422168]
+Training Epoch 100 finished. Loss: 0.204222
+Validating Epoch 100: 100%|████████████████████████████████████████████████| 12/12 [00:01<00:00,  6.14it/s, loss=54.4500]
+Valid set: Average loss: 4.5375, Accuracy: 53.91%, Precision: 49.71%, Recall: 53.80%, F1: 51.67%
+
+
+Validation Loss Over Epochs:
+Epoch 1: 0.690846
+Epoch 2: 0.689151
+Epoch 3: 0.688579
+Epoch 4: 0.689926
+Epoch 5: 0.691783
+Epoch 6: 0.700902
+Epoch 7: 0.717271
+Epoch 8: 0.737370
+Epoch 9: 0.757564
+Epoch 10: 0.787972
+Epoch 11: 0.841858
+Epoch 12: 0.908947
+Epoch 13: 0.957941
+Epoch 14: 1.014352
+Epoch 15: 1.079005
+Epoch 16: 1.150929
+Epoch 17: 1.255523
+Epoch 18: 1.268813
+Epoch 19: 1.373659
+Epoch 20: 1.430524
+Epoch 21: 1.495050
+Epoch 22: 1.567693
+Epoch 23: 1.570983
+Epoch 24: 1.596030
+Epoch 25: 1.692020
+Epoch 26: 1.766162
+Epoch 27: 1.729844
+Epoch 28: 1.734291
+Epoch 29: 1.899251
+Epoch 30: 1.966887
+Epoch 31: 2.075869
+Epoch 32: 1.963142
+Epoch 33: 2.038881
+Epoch 34: 2.186303
+Epoch 35: 2.203014
+Epoch 36: 2.184023
+Epoch 37: 2.392902
+Epoch 38: 2.467481
+Epoch 39: 2.506774
+Epoch 40: 2.688214
+Epoch 41: 2.600158
+Epoch 42: 2.600170
+Epoch 43: 2.993520
+Epoch 44: 2.860377
+Epoch 45: 3.107049
+Epoch 46: 2.871059
+Epoch 47: 2.847555
+Epoch 48: 3.071157
+Epoch 49: 3.085463
+Epoch 50: 3.137323
+Epoch 51: 3.095864
+Epoch 52: 3.113589
+Epoch 53: 3.301424
+Epoch 54: 3.423412
+Epoch 55: 3.261262
+Epoch 56: 3.114820
+Epoch 57: 3.469854
+Epoch 58: 3.358297
+Epoch 59: 3.770000
+Epoch 60: 3.460231
+Epoch 61: 3.414628
+Epoch 62: 4.140461
+Epoch 63: 3.902086
+Epoch 64: 3.994028
+Epoch 65: 3.803229
+Epoch 66: 3.833004
+Epoch 67: 3.573973
+Epoch 68: 4.076690
+Epoch 69: 3.769971
+Epoch 70: 4.496605
+Epoch 71: 3.982201
+Epoch 72: 3.942667
+Epoch 73: 3.851157
+Epoch 74: 3.850378
+Epoch 75: 4.093046
+Epoch 76: 3.987417
+Epoch 77: 3.838049
+Epoch 78: 3.878555
+Epoch 79: 4.475486
+Epoch 80: 4.513522
+Epoch 81: 4.302874
+Epoch 82: 5.063702
+Epoch 83: 4.266735
+Epoch 84: 4.436679
+Epoch 85: 4.103247
+Epoch 86: 4.580987
+Epoch 87: 4.474429
+Epoch 88: 3.959583
+Epoch 89: 4.608531
+Epoch 90: 4.659576
+Epoch 91: 4.072049
+Epoch 92: 4.172860
+Epoch 93: 4.553055
+Epoch 94: 4.580433
+Epoch 95: 4.394002
+Epoch 96: 4.120294
+Epoch 97: 4.443894
+Epoch 98: 4.661290
+Epoch 99: 4.191940
+Epoch 100: 4.537501
+Training finished. Best F1: 0.5203
+Testing full
+Test set: Average loss: 5.1338, Accuracy: 53.26%, Precision: 48.76%, Recall: 54.74%, F1: 51.58%
+Testing short
+Test set: Average loss: 1.3531, Accuracy: 57.54%, Precision: 52.07%, Recall: 49.51%, F1: 50.76%
+Testing long
+Test set: Average loss: 5.9189, Accuracy: 52.75%, Precision: 52.47%, Recall: 58.55%, F1: 55.34%
