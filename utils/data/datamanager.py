@@ -38,9 +38,13 @@ def write(data_frame: pd.DataFrame, path, file_name):
     data_frame.to_pickle(path + file_name)
     
 
-def save_input_dataset(input_dataset, path, file_name):
-    with open(path + file_name, 'wb') as f:
-        pickle.dump(input_dataset, f)
+def save_split_indices(indices_map, path, file_name='split_idx.pkl'):
+    with open(os.path.join(path, file_name), 'wb') as f:
+        pickle.dump(indices_map, f)
+
+def load_split_indices(path, file_name='split_idx.pkl'):
+    with open(os.path.join(path, file_name), 'rb') as f:
+        return pickle.load(f)
 
 def apply_filter(data_frame: pd.DataFrame, filter_func):
     return filter_func(data_frame)
@@ -98,12 +102,12 @@ def check_file_exists(file_path):
 
 
 def split_long_short_test(test_true, test_false):
-    tt = test_true.copy()
-    tf = test_false.copy()
+    tt = test_true
+    tf = test_false
 
     # Compute token lengths
-    tt['token_len'] = tt['func'].apply(count_tokens)
-    tf['token_len'] = tf['func'].apply(count_tokens)
+    tt = tt.assign(token_len=tt['func'].apply(count_tokens))
+    tf = tf.assign(token_len=tf['func'].apply(count_tokens))
 
     # Compute Q25 and Q75 across the combined test distribution
     all_len = pd.concat([tt['token_len'], tf['token_len']])
@@ -115,17 +119,15 @@ def split_long_short_test(test_true, test_false):
     false_short = tf.loc[tf['token_len'] <= q25]
     false_long = tf.loc[tf['token_len'] >= q75]
 
-    test_short = pd.concat([true_short, false_short]).reset_index(drop=True)
-    test_long = pd.concat([true_long, false_long]).reset_index(drop=True)
+    # Keep original indices; do not reset here
+    test_short = pd.concat([true_short, false_short]).drop(columns=['token_len'])
+    test_long = pd.concat([true_long, false_long]).drop(columns=['token_len'])
 
     print(f"Split thresholds (tokens): Q25={int(q25)}, Q75={int(q75)}")
     print(f"Test short: {len(test_short)}")
     print(f"Test long: {len(test_long)}")
 
-    test_short_input = InputDataset(test_short)
-    test_long_input = InputDataset(test_long)
-
-    return test_short_input, test_long_input
+    return test_short, test_long
 
 
 def train_val_test_split(data_frame: pd.DataFrame, shuffle=True, save_path=None):
@@ -146,34 +148,32 @@ def train_val_test_split(data_frame: pd.DataFrame, shuffle=True, save_path=None)
     train_true, test_true = train_test_split(true, test_size=0.2, shuffle=shuffle)
     test_true, val_true = train_test_split(test_true, test_size=0.5, shuffle=shuffle)
 
-    # run = train_false.append(train_true)
+    # Combine all splits (preserve original indices)
     train = pd.concat([train_false, train_true])
-
-    # val = val_false.append(val_true)
     val = pd.concat([val_false, val_true])
-
-    # test = test_false.append(test_true)
     test = pd.concat([test_false, test_true])
 
-    train = train.reset_index(drop=True)
-    val = val.reset_index(drop=True)
-    test = test.reset_index(drop=True)
-
-    train_input = InputDataset(train)
-    val_input = InputDataset(val)
-    test_input = InputDataset(test)
-
-    test_short_input, test_long_input = split_long_short_test(test_true, test_false)
+    # Compute short/long DataFrames
+    test_short, test_long = split_long_short_test(test_true, test_false)
 
     if save_path:
         os.makedirs(save_path, exist_ok=True)
-        save_input_dataset(train_input, save_path, 'train.pkl')
-        save_input_dataset(val_input, save_path, 'val.pkl')
-        save_input_dataset(test_input, save_path, 'test.pkl')
-        save_input_dataset(test_short_input, save_path, 'test_short.pkl')
-        save_input_dataset(test_long_input, save_path, 'test_long.pkl')
-        print(f"Saved split datasets to {save_path}")
+        indices_map = {
+            'train': train.index.to_list(),
+            'val': val.index.to_list(),
+            'test': test.index.to_list(),
+            'short': test_short.index.to_list(),
+            'long': test_long.index.to_list()
+        }
+        save_split_indices(indices_map, save_path, 'split_idx.pkl')
+        print(f"Saved split indices to {save_path}")
 
+    # Wrap into InputDataset for runtime usage (in-memory)
+    train_input = InputDataset(train)
+    val_input = InputDataset(val)
+    test_input = InputDataset(test)
+    test_short_input = InputDataset(test_short)
+    test_long_input = InputDataset(test_long)
 
     return train_input, val_input, test_input, test_short_input, test_long_input
 
@@ -192,9 +192,9 @@ def loads(data_sets_dir, ratio=1):
     data_sets_files.remove(data_sets_files[0])
 
     for ds_file in data_sets_files:
-        # dataset = dataset.append(load(data_sets_dir, ds_file))
         dataset = pd.concat([dataset, load(data_sets_dir, ds_file)])
 
+    dataset = dataset.reset_index(drop=True)
     return dataset
 
 
@@ -213,22 +213,20 @@ def slice_frame(data_frame: pd.DataFrame, size: int):
 
 
 def check_split_exists(split_dir):
-    train_file = os.path.join(split_dir, 'train.pkl')
-    test_file = os.path.join(split_dir, 'test.pkl')
-    val_file = os.path.join(split_dir, 'val.pkl')
-
-    return os.path.isfile(train_file) and os.path.isfile(test_file) and os.path.isfile(val_file)
+    return os.path.isfile(os.path.join(split_dir, 'split_idx.pkl'))
 
 
-def load_input_dataset(path, file_name):
-    with open(path + file_name, 'rb') as f:
-        return pickle.load(f)
+def load_split_datasets(path, dataset):
+    indices = load_split_indices(path, 'split_idx.pkl')
 
+    def by_idx(idxs):
+        return dataset.loc[idxs].reset_index(drop=True)
 
-def load_split_datasets(path):
-    train_dataset = load_input_dataset(path, 'train.pkl')
-    val_dataset = load_input_dataset(path, 'val.pkl')
-    test_dataset = load_input_dataset(path, 'test.pkl')
-    test_short_dataset = load_input_dataset(path, 'test_short.pkl')
-    test_long_dataset = load_input_dataset(path, 'test_long.pkl')
-    return train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset
+    train_df = by_idx(indices['train'])
+    val_df = by_idx(indices['val'])
+    test_df = by_idx(indices['test'])
+    test_short_df = by_idx(indices['short'])
+    test_long_df = by_idx(indices['long'])
+
+    return (InputDataset(train_df), InputDataset(val_df), InputDataset(test_df),
+            InputDataset(test_short_df), InputDataset(test_long_df))

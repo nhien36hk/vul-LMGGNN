@@ -102,10 +102,11 @@ if __name__ == '__main__':
     
     # Check if split datasets exist, if not, load and split from scratch
     split_dir = PATHS.split
+    # Load input dataset
+    input_dataset = loads(PATHS.input)
     if check_split_exists(split_dir):
-        train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = load_split_datasets(split_dir)
+        train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = load_split_datasets(split_dir, input_dataset)
     else:
-        input_dataset = loads(PATHS.input)
         train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = train_val_test_split(input_dataset, shuffle=context.shuffle, save_path=split_dir)
     
     # Create DataLoaders

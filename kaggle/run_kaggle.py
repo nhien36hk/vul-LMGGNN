@@ -84,8 +84,8 @@ def run_kaggle_train(
     # Load best and evaluate on test
     best_model.load_state_dict(torch.load(best_path, map_location=device))
     print("Testing full")
-    test(best_model, device, test_loader, figure_save_path)
+    test(best_model, device, test_loader, os.path.join(figure_save_path, 'full/'))
     print("Testing short")
-    test(best_model, device, test_short_loader, figure_save_path)
+    test(best_model, device, test_short_loader, os.path.join(figure_save_path, 'short/'))
     print("Testing long")
-    test(best_model, device, test_long_loader, figure_save_path)
+    test(best_model, device, test_long_loader, os.path.join(figure_save_path, 'long/'))
