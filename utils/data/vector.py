@@ -1,10 +1,12 @@
 import numpy as np
 import os
-import json
 from sklearn.model_selection import train_test_split
 from torch.utils.data import Dataset 
 from torch.utils.data import DataLoader 
 import torch
+import gc
+
+from utils.data.helper import load
 
 
 class VectorsDataset(Dataset):
@@ -31,16 +33,13 @@ def ensure_numpy_2d(vectors):
     return arr
 
 
-def save_vectors_json(vectors: np.ndarray, file_path: str) -> None:
+def save_vectors_npz(vectors: np.ndarray, file_path: str) -> None:
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    with open(file_path, 'w', encoding='utf-8') as f:
-        json.dump(vectors.tolist(), f)
+    np.savez_compressed(file_path, vectors=vectors.astype(np.float32))
 
 
-def load_vectors_json(file_path: str):
-    with open(file_path, 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    return np.asarray(data, dtype=np.float32)
+def load_vectors_npz(file_path: str):
+    return np.load(file_path)['vectors'].astype(np.float32)
 
 
 def load_vectors_from_input(df) -> np.ndarray:
@@ -72,15 +71,48 @@ def split_vectors(vectors, save_dir: str,
     val_vectors = arr[val_idx]
     test_vectors = arr[test_idx]
 
-    # save_vectors_json(train_vectors, os.path.join(save_dir, 'train.json'))
-    # save_vectors_json(val_vectors, os.path.join(save_dir, 'val.json'))
-    # save_vectors_json(test_vectors, os.path.join(save_dir, 'test.json'))
+    # save_vectors_npz(train_vectors, os.path.join(save_dir, 'train.npz'))
+    # save_vectors_npz(val_vectors, os.path.join(save_dir, 'val.npz'))
+    # save_vectors_npz(test_vectors, os.path.join(save_dir, 'test.npz'))
 
     return VectorsDataset(train_vectors), VectorsDataset(val_vectors), VectorsDataset(test_vectors)
 
 
-def load_vectors_splits_from_json(save_dir: str):
-    train_vectors = load_vectors_json(os.path.join(save_dir, 'train.json'))
-    val_vectors = load_vectors_json(os.path.join(save_dir, 'val.json'))
-    test_vectors = load_vectors_json(os.path.join(save_dir, 'test.json'))
+def load_vectors_splits_from_npz(save_dir: str):
+    train_vectors = load_vectors_npz(os.path.join(save_dir, 'train.npz'))
+    val_vectors = load_vectors_npz(os.path.join(save_dir, 'val.npz'))
+    test_vectors = load_vectors_npz(os.path.join(save_dir, 'test.npz'))
     return VectorsDataset(train_vectors), VectorsDataset(val_vectors), VectorsDataset(test_vectors)
+
+
+def save_vector(input_dir: str, output_dir: str):
+    os.makedirs(output_dir, exist_ok=True)
+
+    for file_name in sorted(os.listdir(input_dir)):
+        if not file_name.endswith('.pkl'):
+            continue
+        file_id = file_name.split('_')[0]
+        out_name = f"{file_id}_vector.npz"
+        out_path = os.path.join(output_dir, out_name)
+        if os.path.exists(out_path):
+            print(f"Vector đã tồn tại: {out_path}")
+            continue
+
+        df = load(input_dir, file_name)
+        vectors = load_vectors_from_input(df)
+        save_vectors_npz(vectors, out_path)
+
+        del df
+        del vectors
+        gc.collect()
+
+
+def load_vector_all_from_npz(vector_dir: str):
+    vectors_all = []
+    for file_name in sorted(os.listdir(vector_dir)):
+        if not file_name.endswith('.npz'):
+            continue
+        in_path = os.path.join(vector_dir, file_name)
+        vectors_all.extend(load_vectors_npz(in_path))
+    vectors_all = np.asarray(vectors_all, dtype=np.float32)
+    return vectors_all

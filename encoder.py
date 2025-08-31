@@ -5,11 +5,12 @@ import os
 import configs
 from models.AutoEncoder import VectorAutoencoder, HybridLoss 
 from utils.data.helper import loads
-from utils.data.vector import load_vectors_from_input, split_vectors, load_vectors_splits_from_json
+from utils.data.vector import load_vector_all_from_npz, load_vectors_from_input, save_vector, split_vectors, load_vectors_splits_from_npz
 
 # --- CÁC THAM SỐ CÓ THỂ THAY ĐỔI ---
 MODEL_SAVE_PATH = 'data/model/autoencoder.pt'
-VECTORS_SPLIT_DIR = 'data/split_vectors'
+VECTORS_SPLIT_DIR = 'data/split_vector'
+VECTORS_DIR = 'data/vector'
 BATCH_SIZE = 128
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 1e-5
@@ -68,15 +69,13 @@ def test(model, device, test_loader, loss_function):
 
 
 if __name__ == "__main__":
-    input_dataset = loads(PATHS.input)
-    print(f"Loaded {len(input_dataset)} samples from input")
     
-    # Extract vectors from PyG Data
-    vectors = load_vectors_from_input(input_dataset)
+    save_vector(PATHS.input, VECTORS_DIR)
+    vectors = load_vector_all_from_npz(VECTORS_DIR)
     
-    # Split train/val/test and save JSON
-    if os.path.exists(VECTORS_SPLIT_DIR) and os.path.exists(os.path.join(VECTORS_SPLIT_DIR, 'train.json')):
-        train_ds, val_ds, test_ds = load_vectors_splits_from_json(VECTORS_SPLIT_DIR)
+    # Split train/val/test and save npy
+    if os.path.exists(VECTORS_SPLIT_DIR) and os.path.exists(os.path.join(VECTORS_SPLIT_DIR, 'train.npz')):
+        train_ds, val_ds, test_ds = load_vectors_splits_from_npz(VECTORS_SPLIT_DIR)
     else:
         train_ds, val_ds, test_ds = split_vectors(vectors, VECTORS_SPLIT_DIR, shuffle=True, random_state=42)
         del vectors
