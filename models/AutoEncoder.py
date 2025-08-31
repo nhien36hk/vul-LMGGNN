@@ -46,6 +46,7 @@ class VectorAutoencoder(nn.Module):
         # Nhận vector gốc, nén xuống kích thước nhỏ hơn
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, 384),
+            nn.LayerNorm(384),
             nn.ReLU(),
             nn.Dropout(dropout_rate), # Lớp Dropout chống overfitting
             nn.Linear(384, compressed_dim)
@@ -55,6 +56,7 @@ class VectorAutoencoder(nn.Module):
         # Nhận vector đã nén, cố gắng tái tạo lại vector gốc
         self.decoder = nn.Sequential(
             nn.Linear(compressed_dim, 384),
+            nn.LayerNorm(384),
             nn.ReLU(),
             nn.Dropout(dropout_rate), # Lớp Dropout chống overfitting
             nn.Linear(384, input_dim)
