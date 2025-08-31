@@ -6,7 +6,8 @@ from models.GGCN import GGCN
 from models.LMGNN import BertGGCN
 from run import train, validate, plot_validation_loss
 from test import test
-from utils.data.datamanager import loads as load_datasets, train_val_test_split as split_dataset
+from utils.data.helper import loads as load_datasets
+from utils.data.input import train_val_test_split as split_dataset
 
 
 def run_kaggle_train(

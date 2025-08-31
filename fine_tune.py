@@ -9,7 +9,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from tqdm import tqdm
 from models.GraphCodeBERT import GraphCodeBertClassifier
 from utils.figure.plot import plot_confusion_matrix, plot_roc_curve
-from utils.data.datamanager import read, train_val_test_split
+from utils.data.helper import read
+from utils.data.input import train_val_test_split
 
 torch.manual_seed(2020)
 

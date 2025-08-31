@@ -5,7 +5,8 @@ import torch.utils.data as Data
 from transformers import AutoTokenizer
 
 from models.GraphCodeBERT import GraphCodeBertClassifier
-from utils.data.datamanager import read, train_val_test_split
+from utils.data.helper import read
+from utils.data.input import train_val_test_split
 from fine_tune import train, val, test, encode_input, CustomDataset
 
 def run_kaggle_finetune(

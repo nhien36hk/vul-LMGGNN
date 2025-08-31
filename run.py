@@ -9,7 +9,8 @@ import configs
 from models.GGCN import GGCN
 from models.LMGNN import BertGGCN
 from test import test
-from utils.data.datamanager import check_split_exists, loads, train_val_test_split, load_split_datasets
+from utils.data.helper import check_split_exists, loads
+from utils.data.input import train_val_test_split, load_split_datasets
 from utils.figure.plot import plot_validation_loss
 
 PATHS = configs.Paths()
@@ -135,20 +136,20 @@ if __name__ == '__main__':
     best_f1 = 0.0
     NUM_EPOCHS = context.epochs
     PATH = args.path
-    losses = []
-    for epoch in range(1, NUM_EPOCHS + 1):
-        train(model, device, train_loader, optimizer, epoch)
-        loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
-        losses.append(loss)
-        if f1 > best_f1:
-            best_f1 = f1
-            if PATH:
-                torch.save(model.state_dict(), PATH)
+    # losses = []
+    # for epoch in range(1, NUM_EPOCHS + 1):
+    #     train(model, device, train_loader, optimizer, epoch)
+    #     loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+    #     losses.append(loss)
+    #     if f1 > best_f1:
+    #         best_f1 = f1
+    #         if PATH:
+    #             torch.save(model.state_dict(), PATH)
     
-    # Plot validation loss after training
-    plot_validation_loss(losses, 'validation_loss.png')
+    # # Plot validation loss after training
+    # plot_validation_loss(losses, 'workspace/validation_loss.png')
     
-    print(f"Training finished. Best F1: {best_f1:.4f}")
+    # print(f"Training finished. Best F1: {best_f1:.4f}")
 
     # Load best model and test
     if PATH:

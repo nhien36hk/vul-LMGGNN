@@ -8,5 +8,6 @@ def setup_kaggle_path():
         if kaggle_path not in sys.path:
             sys.path.insert(0, kaggle_path)
             print(f"✅ Added Kaggle path: {kaggle_path}")
-
+    else:
+        print("❌ Kaggle input is not found")
 setup_kaggle_path()
