@@ -6,15 +6,18 @@ import configs
 from models.AutoEncoder import VectorAutoencoder, HybridLoss 
 from utils.data.helper import loads
 from utils.data.vector import load_vector_all_from_npz, load_vectors_from_input, save_vector, split_vectors, load_vectors_splits_from_npz
+from utils.figure.plot import plot_validation_loss
+
 
 # --- CÁC THAM SỐ CÓ THỂ THAY ĐỔI ---
 MODEL_SAVE_PATH = 'data/model/autoencoder.pt'
 VECTORS_SPLIT_DIR = 'data/split_vector'
 VECTORS_DIR = 'data/vector'
+FIGURE_SAVE_PATH = 'workspace/'
 BATCH_SIZE = 128
 LEARNING_RATE = 1e-4
 WEIGHT_DECAY = 1e-5
-NUM_EPOCHS = 20
+NUM_EPOCHS = 5
 PATHS = configs.Paths()
 FILES = configs.Files()
 DEVICE = FILES.get_device()
@@ -96,19 +99,22 @@ if __name__ == "__main__":
 
     # --- Begin training loop ---
     best_val_loss = float('inf')
+    losses = []
     os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
 
     print("\nBegin training AutoEncoder...")
     for epoch in range(1, NUM_EPOCHS + 1):
         total_train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
         total_val_loss = val(model, device, val_loader, loss_function, epoch)
-        
+        losses.append(total_val_loss)
         print(f"Epoch {epoch}/{NUM_EPOCHS} | Train Loss: {total_train_loss:.6f} | Val Loss: {total_val_loss:.6f}")
 
         if total_val_loss < best_val_loss:
             best_val_loss = total_val_loss
             torch.save(model.state_dict(), MODEL_SAVE_PATH)  # Save all model
             print(f"-> Val loss cải thiện. Đã lưu model tốt nhất vào '{MODEL_SAVE_PATH}'")
+
+    plot_validation_loss(losses, os.path.join(FIGURE_SAVE_PATH, 'validation_loss_autoencoder.png'))
 
     print("\n--- Begin testing ---")
     # Load best model and test

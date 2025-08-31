@@ -4,6 +4,7 @@ import torch
 from encoder import train, val, test
 from models.AutoEncoder import VectorAutoencoder, HybridLoss
 from utils.data.vector import load_vector_all_from_npz, split_vectors
+from utils.figure.plot import plot_validation_loss
 
 
 def run_kaggle_encoder(
@@ -39,19 +40,22 @@ def run_kaggle_encoder(
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
     best_val_loss = float('inf')
+    losses = []
     best_path = os.path.join(output_model_dir, model_filename)
 
     print("\nBegin training AutoEncoder (Kaggle)...")
     for epoch in range(1, epochs + 1):
         total_train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
         total_val_loss = val(model, device, val_loader, loss_function, epoch)
-
+        losses.append(total_val_loss)
         print(f"Epoch {epoch}/{epochs} | Train Loss: {total_train_loss:.6f} | Val Loss: {total_val_loss:.6f}")
 
         if total_val_loss < best_val_loss:
             best_val_loss = total_val_loss
             torch.save(model.state_dict(), best_path)
             print(f"-> Improved val loss. Saved best model to '{best_path}'")
+
+    plot_validation_loss(losses, os.path.join(output_model_dir, 'validation_loss_autoencoder.png'))
 
     print("\n--- Begin testing (best model) ---")
     model.load_state_dict(torch.load(best_path, map_location=device))
