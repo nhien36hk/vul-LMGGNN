@@ -73,7 +73,7 @@ def test(model, device, test_loader, loss_function):
 
 if __name__ == "__main__":
     
-    save_vector(PATHS.input, VECTORS_DIR)
+    # save_vector(PATHS.input, VECTORS_DIR)
     vectors = load_vector_all_from_npz(VECTORS_DIR)
     
     # Split train/val/test and save npy

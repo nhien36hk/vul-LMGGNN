@@ -10,13 +10,13 @@ from utils.figure.plot import plot_validation_loss
 def run_kaggle_encoder(
     vectors_dir: str = '/kaggle/input/lm-train/LMTrain/data/vector/',
     output_model_dir: str = '/kaggle/working/trained_models/',
-    model_filename: str = 'autoencoder.pt',
-    batch_size: int = 128,
-    learning_rate: float = 1e-4,
-    weight_decay: float = 1e-5,
-    epochs: int = 20,
+    last_point_path: str = None,
     input_dim: int = 769,
     compressed_dim: int = 101,
+    batch_size: int = 128,
+    epochs: int = 20,
+    learning_rate: float = 1e-4,
+    weight_decay: float = 1e-5,
 ):
     os.makedirs(output_model_dir, exist_ok=True)
 
@@ -36,12 +36,19 @@ def run_kaggle_encoder(
 
     # Model, loss, optimizer
     model = VectorAutoencoder(input_dim=input_dim, compressed_dim=compressed_dim).to(device)
+    
+    # Load last point if exists
+    if last_point_path and os.path.exists(last_point_path):
+        print(f"Loading last point from {last_point_path}")
+        model.load_state_dict(torch.load(last_point_path, map_location=device))
+    
     loss_function = HybridLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
     best_val_loss = float('inf')
     losses = []
-    best_path = os.path.join(output_model_dir, model_filename)
+    best_path = os.path.join(output_model_dir, 'autoencoder.pt')
+    last_path = os.path.join(output_model_dir, 'last_point.pt')
 
     print("\nBegin training AutoEncoder (Kaggle)...")
     for epoch in range(1, epochs + 1):
@@ -54,7 +61,7 @@ def run_kaggle_encoder(
             best_val_loss = total_val_loss
             torch.save(model.state_dict(), best_path)
             print(f"-> Improved val loss. Saved best model to '{best_path}'")
-
+    torch.save(model.state_dict(), last_path)
     plot_validation_loss(losses, os.path.join(output_model_dir, 'validation_loss_autoencoder.png'))
 
     print("\n--- Begin testing (best model) ---")
