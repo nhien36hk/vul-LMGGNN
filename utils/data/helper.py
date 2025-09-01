@@ -24,7 +24,7 @@ def get_ratio(dataset, ratio):
 
 
 def load(path, pickle_file, ratio=1):
-    dataset = pd.read_pickle(path + pickle_file)
+    dataset = pd.read_pickle(os.path.join(path, pickle_file))
     dataset.info(memory_usage='deep')
     if ratio < 1:
         dataset = get_ratio(dataset, ratio)
@@ -33,7 +33,7 @@ def load(path, pickle_file, ratio=1):
 
 
 def write(data_frame: pd.DataFrame, path, file_name):
-    data_frame.to_pickle(path + file_name)
+    data_frame.to_pickle(os.path.join(path, file_name))
     
 
 def save_split_indices(indices_map, path, file_name='split_idx.pkl'):
@@ -70,7 +70,7 @@ def to_files(data_frame: pd.DataFrame, out_path):
 
     for idx, row in data_frame.iterrows():
         file_name = f"{idx}.c"
-        with open(out_path + file_name, 'w') as f:
+        with open(os.path.join(out_path, file_name), 'w') as f:
             f.write(row.func)
 
 

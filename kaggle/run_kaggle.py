@@ -2,33 +2,38 @@ import os
 import torch
 
 import configs
-from models.GGCN import GGCN
+from models.Devign2 import Devign2
 from models.LMGNN import BertGGCN
 from run import train, validate, plot_validation_loss
 from test import test
 from utils.data.helper import loads as load_datasets
-from utils.data.input import train_val_test_split as split_dataset
+from utils.data.input import train_val_test_split, load_split_datasets
+from utils.data.helper import check_split_exists
 
 
 def run_kaggle_train(
-    input_dir: str = '/kaggle/input/lm-train/LMTrain/data/input/',
-    output_model_dir: str = '/kaggle/working/trained_models/',
-    model_filename: str = 'bertggcn.pt',
-    model_dir: str = '/kaggle/input/lm-train/LMTrain/data/model/',
+    data_dir: str = '/kaggle/input/lm-train/LMTrain/data/',
+    kaggle_working_dir: str = '/kaggle/working/',
+    model_filename: str = 'devign2.pt',
+    autoencoder_filename: str = 'autoencoder.pt',
     finetune_filename: str = 'graphcodebert_finetune.pt',
     hugging_path_filename: str = 'graphcodebert_finetune_hf',
-    random_state: int = 42,
-    figure_save_path: str = '/kaggle/working/figures/',
     batch_size: int = 12,
     epochs: int = 30,
     k: float = 0.6,
-    mode_lm: bool = True
+    mode_lm: bool = True,
+    autoencoder_path: str = None,
 ):
-    """
-    Kaggle-ready train flow using prebuilt input PKLs from input_dir.
-    - No argparse, no config paths. Only uses configs for hyperparams.
-    - Loads all PKLs via datamanager.loads and splits via datamanager.train_val_test_split.
-    """
+    output_model_dir = os.path.join(kaggle_working_dir, 'trained_models')
+    figure_save_path = os.path.join(kaggle_working_dir, 'figures')
+
+    split_dir = os.path.join(data_dir, 'split')
+    input_dir = os.path.join(data_dir, 'input')
+    finetune_file = os.path.join(data_dir, 'model', finetune_filename)
+    
+    hugging_path = os.path.join(output_model_dir, hugging_path_filename)
+    best_path = os.path.join(output_model_dir, model_filename)
+
     os.makedirs(output_model_dir, exist_ok=True)
     os.makedirs(figure_save_path, exist_ok=True)
 
@@ -39,7 +44,10 @@ def run_kaggle_train(
     # Split into InputDataset wrappers using project utility
     proc_config = configs.Process()
     shuffle = proc_config.shuffle
-    train_ds, val_ds, test_ds, test_short_ds, test_long_ds = split_dataset(input_dataset, shuffle=shuffle, save_path=output_model_dir)
+    if check_split_exists(split_dir):
+        train_ds, val_ds, test_ds, test_short_ds, test_long_ds = load_split_datasets(split_dir, input_dataset)
+    else:
+        train_ds, val_ds, test_ds, test_short_ds, test_long_ds = train_val_test_split(input_dataset, shuffle=shuffle, save_path=split_dir)
 
     # Build DataLoaders
     train_loader = train_ds.get_loader(batch_size, shuffle=True)
@@ -57,19 +65,20 @@ def run_kaggle_train(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     if mode_lm:
-        finetune_file = os.path.join(model_dir, finetune_filename)
-        hugging_path = os.path.join(output_model_dir, hugging_path_filename)
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
         best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
     else:
-        model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
-        best_model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
+        best_model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=bertggnn.learning_rate, weight_decay=bertggnn.weight_decay)
+    optimizer = torch.optim.AdamW(
+        (p for p in model.parameters() if p.requires_grad), 
+        lr=bertggnn.learning_rate, 
+        weight_decay=bertggnn.weight_decay
+    )
 
     # Train loop
     best_f1 = 0.0
-    best_path = os.path.join(output_model_dir, model_filename)
     losses = []
 
     for epoch in range(1, epochs + 1):

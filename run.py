@@ -1,12 +1,12 @@
 from argparse import ArgumentParser
-
+import os
 import torch
 import torch.nn.functional as F
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from tqdm import tqdm
 
 import configs
-from models.GGCN import GGCN
+from models.Devign2 import Devign2
 from models.LMGNN import BertGGCN
 from test import test
 from utils.data.helper import check_split_exists, loads
@@ -100,11 +100,9 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     context = configs.Process()
-    
-    # Check if split datasets exist, if not, load and split from scratch
     split_dir = PATHS.split
-    # Load input dataset
     input_dataset = loads(PATHS.input)
+    
     if check_split_exists(split_dir):
         train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = load_split_datasets(split_dir, input_dataset)
     else:
@@ -128,28 +126,30 @@ if __name__ == '__main__':
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
         model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
     else:
-        model = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
-        model_test = GGCN(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        autoencoder_path = os.path.join(PATHS.model, 'autoencoder.pt')
+        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
+        model_test = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
 
-    optimizer = torch.optim.AdamW(model.parameters(), lr=Bertggnn.learning_rate, weight_decay=Bertggnn.weight_decay)
+    optimizer = torch.optim.AdamW(
+        (p for p in model.parameters() if p.requires_grad), 
+        lr=Bertggnn.learning_rate, 
+        weight_decay=Bertggnn.weight_decay
+    )
 
     best_f1 = 0.0
     NUM_EPOCHS = context.epochs
     PATH = args.path
-    # losses = []
-    # for epoch in range(1, NUM_EPOCHS + 1):
-    #     train(model, device, train_loader, optimizer, epoch)
-    #     loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
-    #     losses.append(loss)
-    #     if f1 > best_f1:
-    #         best_f1 = f1
-    #         if PATH:
-    #             torch.save(model.state_dict(), PATH)
-    
-    # # Plot validation loss after training
-    # plot_validation_loss(losses, 'workspace/validation_loss.png')
-    
-    # print(f"Training finished. Best F1: {best_f1:.4f}")
+    losses = []
+    for epoch in range(1, NUM_EPOCHS + 1):
+        train(model, device, train_loader, optimizer, epoch)
+        loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+        losses.append(loss)
+        if f1 > best_f1:
+            best_f1 = f1
+            if PATH:
+                torch.save(model.state_dict(), PATH)
+    print(f"Training finished. Best F1: {best_f1:.4f}")
+    plot_validation_loss(losses, 'workspace/validation_loss.png')
 
     # Load best model and test
     if PATH:
