@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch_geometric.nn.conv import GatedGraphConv
 from transformers import AutoModel, AutoTokenizer
 from transformers import RobertaTokenizer, RobertaConfig, RobertaModel
+import math
 
 torch.manual_seed(2020)
 
@@ -80,9 +81,13 @@ class Conv(nn.Module):
         Z_flatten_size = int(Z.shape[1] * Z.shape[-1])
         Y_flatten_size = int(Y.shape[1] * Y.shape[-1])
 
+        fc1 = nn.Linear(Z_flatten_size, 1).to(Z.device)
+        fc2 = nn.Linear(Y_flatten_size, 1).to(Y.device)
+
         Z = Z.view(-1, Z_flatten_size)
         Y = Y.view(-1, Y_flatten_size)
-        res = self.fc1(Z) * self.fc2(Y)
+
+        res = fc1(Z) * fc2(Y)
         res = self.drop(res)
 
         # res = F.softmax(res, dim=1)
