@@ -68,8 +68,9 @@ def run_kaggle_train(
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
         best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
     else:
-        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
-        best_model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
+        compressed_dim = 101
+        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
+        best_model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
 
     optimizer = torch.optim.AdamW(
         (p for p in model.parameters() if p.requires_grad), 

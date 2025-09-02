@@ -127,8 +127,9 @@ if __name__ == '__main__':
         model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
     else:
         autoencoder_path = os.path.join(PATHS.model, 'autoencoder.pt')
-        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
-        model_test = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path).to(device)
+        compressed_dim = 101
+        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
+        model_test = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
 
     optimizer = torch.optim.AdamW(
         (p for p in model.parameters() if p.requires_grad), 
