@@ -5,14 +5,14 @@ import os
 import configs
 from models.AutoEncoder import VectorAutoencoder, HybridLoss 
 from utils.data.helper import loads
-from utils.data.vector import load_vector_all_from_npz, load_vectors_from_input, save_vector, split_vectors, load_vectors_splits_from_npz
+from utils.data.vector import split_df_by_ratio, VectorsDataset
+from torch.utils.data import DataLoader, ConcatDataset
 from utils.figure.plot import plot_validation_loss
 
 
 # --- CÁC THAM SỐ CÓ THỂ THAY ĐỔI ---
 MODEL_SAVE_PATH = 'data/model/autoencoder.pt'
-VECTORS_SPLIT_DIR = 'data/split_vector'
-VECTORS_DIR = 'data/vector'
+INPUT_DIR = 'data/input'
 FIGURE_SAVE_PATH = 'workspace/'
 BATCH_SIZE = 128
 LEARNING_RATE = 1e-4
@@ -22,13 +22,14 @@ PATHS = configs.Paths()
 FILES = configs.Files()
 DEVICE = FILES.get_device()
 
+
 def train(model, device, train_loader, optimizer, loss_function, epoch):
     model.train()
-    total_train_loss = 0
-    progress_bar = tqdm(enumerate(train_loader), total=len(train_loader), desc=f"Training Epoch {epoch}")
-    for batch_idx, vectors in progress_bar:
+    total_train_loss = 0.0
+    num_batches = 0
+    progress_bar = tqdm(train_loader, total=len(train_loader), desc=f"Training Epoch {epoch}")
+    for vectors in progress_bar:
         vectors = vectors.to(device)
-        
         reconstructed = model(vectors)
         loss = loss_function(reconstructed, vectors)
         
@@ -37,67 +38,50 @@ def train(model, device, train_loader, optimizer, loss_function, epoch):
         optimizer.step()
         
         total_train_loss += loss.item()
-        progress_bar.set_postfix({"loss": f"{total_train_loss/(batch_idx+1):.6f}"})
-
+        num_batches += 1
+        avg = total_train_loss / max(num_batches, 1)
+        progress_bar.set_postfix({"loss": f"{avg:.6f}"})
+    
     return total_train_loss
 
-def val(model, device, val_loader, loss_function, epoch):
+
+def val(model, device, val_loader, loss_function, label, epoch = 0):
     model.eval()
-    total_val_loss = 0
+    total_loss = 0.0
     with torch.no_grad():
-        progress_bar = tqdm(enumerate(val_loader), total=len(val_loader), desc=f"Validating Epoch {epoch}")
-        for batch_idx, vectors in progress_bar:
+        progress_bar = tqdm(val_loader, total=len(val_loader), desc=f"{label} Epoch {epoch}")
+        for vectors in progress_bar:
             vectors = vectors.to(device)
             reconstructed = model(vectors)
             loss = loss_function(reconstructed, vectors)
-            total_val_loss += loss.item()
-    
-    return total_val_loss
-
-
-
-def test(model, device, test_loader, loss_function):
-    model.eval()
-    total_test_loss = 0
-    with torch.no_grad():
-        progress_bar = tqdm(enumerate(test_loader), total=len(test_loader), desc="Testing")
-        for batch_idx, vectors in progress_bar:
-            vectors = vectors.to(device)
-            reconstructed = model(vectors)
-            loss = loss_function(reconstructed, vectors)
-            total_test_loss += loss.item()
-    
-    print(f"Test Loss: {total_test_loss:.6f}")
-    return total_test_loss
+            total_loss += loss.item()
+    return total_loss
 
 
 if __name__ == "__main__":
-    
-    # save_vector(PATHS.input, VECTORS_DIR)
-    vectors = load_vector_all_from_npz(VECTORS_DIR)
-    
-    # Split train/val/test and save npy
-    if os.path.exists(VECTORS_SPLIT_DIR) and os.path.exists(os.path.join(VECTORS_SPLIT_DIR, 'train.npz')):
-        train_ds, val_ds, test_ds = load_vectors_splits_from_npz(VECTORS_SPLIT_DIR)
-    else:
-        train_ds, val_ds, test_ds = split_vectors(vectors, VECTORS_SPLIT_DIR, shuffle=True, random_state=42)
-        del vectors
-        gc.collect()
-    
-    # Create DataLoaders
-    train_loader = train_ds.get_loader(BATCH_SIZE, shuffle=True, drop_last=True)
-    val_loader = val_ds.get_loader(BATCH_SIZE, shuffle=False, drop_last=False)
-    test_loader = test_ds.get_loader(BATCH_SIZE, shuffle=False, drop_last=False)
+    input_dataset = loads(INPUT_DIR)
+    train_df, val_df, test_df = split_df_by_ratio(input_dataset, shuffle=True, random_state=42)
 
-    print(f"Train: {len(train_ds)}, Val: {len(val_ds)}, Test: {len(test_ds)}")
+    train_sets = [VectorsDataset(obj.x.detach().cpu().numpy()) for obj in train_df['input']]
+    val_sets = [VectorsDataset(obj.x.detach().cpu().numpy()) for obj in val_df['input']]
+    test_sets = [VectorsDataset(obj.x.detach().cpu().numpy()) for obj in test_df['input']]
+
+    train_concat = ConcatDataset(train_sets)
+    val_concat = ConcatDataset(val_sets)
+    test_concat = ConcatDataset(test_sets)
+
+    train_loader = DataLoader(train_concat, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
+    val_loader = DataLoader(val_concat, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
+    test_loader = DataLoader(test_concat, batch_size=BATCH_SIZE, shuffle=False, drop_last=False)
 
     device = DEVICE
-    print(f"Sử dụng thiết bị: {device}")
+    print(f"Using device: {device}")
+
+    # Model, loss, optimizer
     model = VectorAutoencoder(input_dim=769, compressed_dim=101).to(device)
     loss_function = HybridLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE, weight_decay=WEIGHT_DECAY)
 
-    # --- Begin training loop ---
     best_val_loss = float('inf')
     losses = []
     os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
@@ -105,21 +89,20 @@ if __name__ == "__main__":
     print("\nBegin training AutoEncoder...")
     for epoch in range(1, NUM_EPOCHS + 1):
         total_train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
-        total_val_loss = val(model, device, val_loader, loss_function, epoch)
+        total_val_loss = val(model, device, val_loader, loss_function, label="Val", epoch=epoch)
         losses.append(total_val_loss)
         print(f"Epoch {epoch}/{NUM_EPOCHS} | Train Loss: {total_train_loss:.6f} | Val Loss: {total_val_loss:.6f}")
 
         if total_val_loss < best_val_loss:
             best_val_loss = total_val_loss
-            torch.save(model.state_dict(), MODEL_SAVE_PATH)  # Save all model
+            torch.save(model.state_dict(), MODEL_SAVE_PATH)
             print(f"-> Val loss cải thiện. Đã lưu model tốt nhất vào '{MODEL_SAVE_PATH}'")
 
     plot_validation_loss(losses, os.path.join(FIGURE_SAVE_PATH, 'validation_loss_autoencoder.png'))
 
     print("\n--- Begin testing ---")
-    # Load best model and test
     model.load_state_dict(torch.load(MODEL_SAVE_PATH, map_location=device))
-    test_loss = test(model, device, test_loader, loss_function)
+    test_loss = val(model, device, test_loader, loss_function, label="Test", epoch=0)
     
     print("\nTraining finished!")
     print(f"Best Val Loss: {best_val_loss:.6f}")
