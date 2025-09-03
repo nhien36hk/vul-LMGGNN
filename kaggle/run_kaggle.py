@@ -2,6 +2,7 @@ import os
 import torch
 
 import configs
+from models.Devign1 import Devign1
 from models.Devign2 import Devign2
 from models.LMGNN import BertGGCN
 from run import train, validate, plot_validation_loss
@@ -23,11 +24,12 @@ def run_kaggle_train(
     k: float = 0.6,
     mode_lm: bool = True,
     autoencoder_path: str = None,
+    split_dir: str = None,
 ):
     output_model_dir = os.path.join(kaggle_working_dir, 'trained_models')
     figure_save_path = os.path.join(kaggle_working_dir, 'figures')
 
-    split_dir = os.path.join(data_dir, 'split')
+    # split_dir = os.path.join(data_dir, 'split')
     input_dir = os.path.join(data_dir, 'input')
     finetune_file = os.path.join(data_dir, 'model', finetune_filename)
     
@@ -45,6 +47,7 @@ def run_kaggle_train(
     proc_config = configs.Process()
     shuffle = proc_config.shuffle
     if check_split_exists(split_dir):
+        print(f"Loading split dataset from {split_dir}")
         train_ds, val_ds, test_ds, test_short_ds, test_long_ds = load_split_datasets(split_dir, input_dataset)
     else:
         train_ds, val_ds, test_ds, test_short_ds, test_long_ds = train_val_test_split(input_dataset, shuffle=shuffle, save_path=split_dir)
@@ -68,12 +71,11 @@ def run_kaggle_train(
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
         best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
     else:
-        compressed_dim = 101
-        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
-        best_model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
+        model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        best_model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
     optimizer = torch.optim.AdamW(
-        (p for p in model.parameters() if p.requires_grad), 
+        model.parameters(), 
         lr=bertggnn.learning_rate, 
         weight_decay=bertggnn.weight_decay
     )

@@ -6,7 +6,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from tqdm import tqdm
 
 import configs
-from models.Devign2 import Devign2
+from models.Devign1 import Devign1
 from models.LMGNN import BertGGCN
 from test import test
 from utils.data.helper import check_split_exists, loads
@@ -126,13 +126,11 @@ if __name__ == '__main__':
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
         model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
     else:
-        autoencoder_path = os.path.join(PATHS.model, 'autoencoder.pt')
-        compressed_dim = 101
-        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
-        model_test = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=compressed_dim).to(device)
+        model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model_test = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
     optimizer = torch.optim.AdamW(
-        (p for p in model.parameters() if p.requires_grad), 
+        model.parameters(), 
         lr=Bertggnn.learning_rate, 
         weight_decay=Bertggnn.weight_decay
     )
