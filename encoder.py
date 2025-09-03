@@ -25,7 +25,7 @@ DEVICE = FILES.get_device()
 
 def train(model, device, train_loader, optimizer, loss_function, epoch):
     model.train()
-    total_train_loss = 0.0
+    train_loss = 0.0
     num_batches = 0
     progress_bar = tqdm(train_loader, total=len(train_loader), desc=f"Training Epoch {epoch}")
     for vectors in progress_bar:
@@ -37,25 +37,25 @@ def train(model, device, train_loader, optimizer, loss_function, epoch):
         loss.backward()
         optimizer.step()
         
-        total_train_loss += loss.item()
+        train_loss += loss.item()
         num_batches += 1
-        avg = total_train_loss / max(num_batches, 1)
+        avg = train_loss / max(num_batches, 1)
         progress_bar.set_postfix({"loss": f"{avg:.6f}"})
     
-    return total_train_loss
+    return train_loss/len(train_loader)
 
 
 def val(model, device, val_loader, loss_function, label, epoch = 0):
     model.eval()
-    total_loss = 0.0
+    val_loss = 0.0
     with torch.no_grad():
         progress_bar = tqdm(val_loader, total=len(val_loader), desc=f"{label} Epoch {epoch}")
         for vectors in progress_bar:
             vectors = vectors.to(device)
             reconstructed = model(vectors)
             loss = loss_function(reconstructed, vectors)
-            total_loss += loss.item()
-    return total_loss
+            val_loss += loss.item()
+    return val_loss/len(val_loader)
 
 
 if __name__ == "__main__":
@@ -88,13 +88,13 @@ if __name__ == "__main__":
 
     print("\nBegin training AutoEncoder...")
     for epoch in range(1, NUM_EPOCHS + 1):
-        total_train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
-        total_val_loss = val(model, device, val_loader, loss_function, label="Val", epoch=epoch)
-        losses.append(total_val_loss)
-        print(f"Epoch {epoch}/{NUM_EPOCHS} | Train Loss: {total_train_loss:.6f} | Val Loss: {total_val_loss:.6f}")
+        train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
+        val_loss = val(model, device, val_loader, loss_function, label="Val", epoch=epoch)
+        losses.append(val_loss)
+        print(f"Epoch {epoch}/{NUM_EPOCHS} | Train Loss: {train_loss:.6f} | Val Loss: {val_loss:.6f}")
 
-        if total_val_loss < best_val_loss:
-            best_val_loss = total_val_loss
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
             torch.save(model.state_dict(), MODEL_SAVE_PATH)
             print(f"-> Val loss cải thiện. Đã lưu model tốt nhất vào '{MODEL_SAVE_PATH}'")
 

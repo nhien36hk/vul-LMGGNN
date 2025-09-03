@@ -54,13 +54,13 @@ def run_kaggle_encoder(
 
     print("\nBegin training AutoEncoder (Kaggle)...")
     for epoch in range(1, epochs + 1):
-        total_train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
-        total_val_loss = val(model, device, val_loader, loss_function, label="Val", epoch=epoch)
-        losses.append(total_val_loss)
-        print(f"Epoch {epoch}/{epochs} | Train Loss: {total_train_loss:.6f} | Val Loss: {total_val_loss:.6f}")
+        train_loss = train(model, device, train_loader, optimizer, loss_function, epoch)
+        val_loss = val(model, device, val_loader, loss_function, label="Val", epoch=epoch)
+        losses.append(val_loss)
+        print(f"Epoch {epoch}/{epochs} | Train Loss: {train_loss:.6f} | Val Loss: {val_loss:.6f}")
 
-        if total_val_loss < best_val_loss:
-            best_val_loss = total_val_loss
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
             torch.save(model.state_dict(), best_path)
             print(f"-> Improved val loss. Saved best model to '{best_path}'")
 
