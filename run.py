@@ -139,6 +139,8 @@ if __name__ == '__main__':
     NUM_EPOCHS = context.epochs
     PATH = args.path
     losses = []
+    early_stopping = 0
+    patience = 10
     for epoch in range(1, NUM_EPOCHS + 1):
         train(model, device, train_loader, optimizer, epoch)
         loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
@@ -147,6 +149,12 @@ if __name__ == '__main__':
             best_f1 = f1
             if PATH:
                 torch.save(model.state_dict(), PATH)
+        else:
+            early_stopping += 1
+            print(f"Early stopping: {early_stopping}")
+            if early_stopping >= patience:
+                print("Early stopping")
+                break
     print(f"Training finished. Best F1: {best_f1:.4f}")
     plot_validation_loss(losses, 'workspace/validation_loss.png')
 

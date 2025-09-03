@@ -83,7 +83,9 @@ def run_kaggle_train(
     # Train loop
     best_f1 = 0.0
     losses = []
-
+    early_stopping = 0
+    patience = 10
+    
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, optimizer, epoch)
         loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
@@ -91,6 +93,13 @@ def run_kaggle_train(
         if best_f1 < f1:
             best_f1 = f1
             torch.save(model.state_dict(), best_path)
+        else:
+            early_stopping += 1
+            print(f"Early stopping: {early_stopping}")
+            if early_stopping >= patience:
+                print("Early stopping")
+                break
+
     plot_validation_loss(losses, os.path.join(figure_save_path, 'validation_loss.png'))
     print(f"Training finished. Best F1: {best_f1:.4f}")
 
