@@ -7,9 +7,11 @@ from torch_geometric.nn import global_mean_pool
 class Devign1(nn.Module):
     def __init__(self, gated_graph_conv_args, conv_args, emb_size, device):
         super(Devign1, self).__init__()
-
+        
+        # Graph neural network layer
         self.ggnn = GatedGraphConv(**gated_graph_conv_args).to(device)
         
+        # Classifier network
         input_size = gated_graph_conv_args["out_channels"] + emb_size
         self.classifier = nn.Sequential(
             nn.Linear(input_size, 256),
@@ -21,20 +23,23 @@ class Devign1(nn.Module):
             nn.Linear(128, 1)
         ).to(device)
         
-        self.device = device
     def forward(self, data):
+        # Extract input data
         x_in, edge_index = data.x, data.edge_index
         
+        # Graph convolution
         x_gnn = self.ggnn(x_in, edge_index)
         
+        # Combine GNN output with original features
         final_node_representation = torch.cat([x_gnn, x_in], dim=1)
         
+        # Graph-level pooling
         graph_representation = global_mean_pool(final_node_representation, data.batch)
         
+        # Classification
         logits = self.classifier(graph_representation)
-        
-        # Sigmoid để có output [0, 1] (Đã đúng)
         probs = torch.sigmoid(logits)
+        
         return probs
 
     def save(self, path):
@@ -44,4 +49,3 @@ class Devign1(nn.Module):
 
     def load(self, path):
         self.load_state_dict(torch.load(path))
-
