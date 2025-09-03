@@ -12,8 +12,19 @@ class Devign2(nn.Module):
     def __init__(self, gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim):
         super(Devign2, self).__init__()
 
+        # Graph neural network layer
         self.ggnn = GatedGraphConv(**gated_graph_conv_args).to(device)
         
+        # AutoEncoder setup
+        self.autoencoder = VectorAutoencoder(input_dim=emb_size, compressed_dim=compressed_dim).to(device)
+        state = torch.load(autoencoder_path, map_location=device)
+        self.autoencoder.load_state_dict(state)
+        # Freeze AE parameters
+        for p in self.autoencoder.parameters():
+            p.requires_grad = False
+        self.autoencoder.eval()
+        
+        # Classifier network
         input_size = gated_graph_conv_args["out_channels"] + compressed_dim
         print("input_size", input_size)
         self.classifier = nn.Sequential(
@@ -25,35 +36,25 @@ class Devign2(nn.Module):
             nn.Dropout(0.3),
             nn.Linear(128, 1)
         ).to(device)
-        
-        self.device = device
-
-        self.autoencoder = VectorAutoencoder(input_dim=emb_size, compressed_dim=compressed_dim).to(device)
-        state = torch.load(autoencoder_path, map_location=device)
-        self.autoencoder.load_state_dict(state)
-        # Freeze AE parameters
-        for p in self.autoencoder.parameters():
-            p.requires_grad = False
-        self.autoencoder.eval()
 
     def forward(self, data):
         x_in, edge_index = data.x, data.edge_index
         
-        # Nén vector input
+        # Compress input vectors
         with torch.no_grad():
             compressed = self.autoencoder.compress(x_in)
         
-        # Chạy GGNN trên vector nén
+        # Graph convolution on compressed vectors
         x_gnn = self.ggnn(compressed, edge_index)
         
-        # Nối output của GNN và embedding nén lại (Đã đúng)
+        # Combine GNN output with compressed embeddings
         final_node_representation = torch.cat([x_gnn, compressed], dim=1)
         
+        # Graph-level pooling
         graph_representation = global_mean_pool(final_node_representation, data.batch)
         
+        # Classification with sigmoid activation
         logits = self.classifier(graph_representation)
-        
-        # Sigmoid để có output [0, 1] (Đã đúng)
         probs = torch.sigmoid(logits)
         return probs
 
@@ -64,4 +65,3 @@ class Devign2(nn.Module):
 
     def load(self, path):
         self.load_state_dict(torch.load(path))
-
