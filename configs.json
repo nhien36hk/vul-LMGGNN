@@ -4,7 +4,7 @@
         "weight_decay" : 1.3e-6,
         "loss_lambda" : 1.3e-6,
         "model": {
-            "gated_graph_conv_args": {"out_channels" : 205, "num_layers" : 6, "aggr" : "add", "bias": true},
+            "gated_graph_conv_args": {"out_channels" : 256, "num_layers" : 6, "aggr" : "add", "bias": true},
             "conv_args": {
                 "conv1d_1" : {"in_channels": 205, "out_channels": 50, "kernel_size": 3, "padding" : 1},
                 "conv1d_2" : {"in_channels": 50, "out_channels": 20, "kernel_size": 1, "padding" : 1},
@@ -25,7 +25,8 @@
         "raw" : "data/raw/",
         "input" : "data/input/",
         "model" : "data/model/",
-        "tokens" : "data/tokens/"
+        "tokens" : "data/tokens/",
+        "split" : "data/split/"
     },
     "files" : {
         "raw" : "dataset.json",
@@ -38,9 +39,9 @@
         "edge_type": "Ast"
     },
     "process" : {
-        "epochs" : 100,
-        "patience" : 10,
-        "batch_size" : 32,
+        "epochs" : 150,
+        "patience" : 10,    
+        "batch_size" : 128,
         "dataset_ratio" : 0.2,
         "shuffle" : true
     }

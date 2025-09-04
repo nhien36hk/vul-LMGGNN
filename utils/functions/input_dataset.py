@@ -12,7 +12,7 @@ class InputDataset(TorchDataset):
     def __getitem__(self, index):
         # return self.dataset.iloc[index].input
         data = self.dataset.iloc[index].input
-        data.func = self.dataset.iloc[index].func  # Add existing 'func' attribute for CodeBERT input
+        data.func = self.dataset.iloc[index].func 
         return data
 
     def get_loader(self, batch_size, shuffle=True):

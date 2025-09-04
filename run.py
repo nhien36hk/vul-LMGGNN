@@ -1,13 +1,18 @@
-import argparse
 from argparse import ArgumentParser
-import configs
+import os
 import torch
 import torch.nn.functional as F
-from utils.data.datamanager import loads, train_val_test_split
-from models.LMGNN import BertGGCN
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
-from test import test
 from tqdm import tqdm
+
+import configs
+from models.Devign1 import Devign1
+from models.LMGNN import BertGGCN
+from test import test
+from utils.data.helper import check_split_exists, loads
+from utils.data.input import train_val_test_split, load_split_datasets
+from utils.figure.plot import plot_validation_loss
+
 PATHS = configs.Paths()
 FILES = configs.Files()
 DEVICE = FILES.get_device()
@@ -85,54 +90,84 @@ def validate(model, device, test_loader, epoch):
         test_loss, accuracy * 100, precision * 100, recall * 100, f1 * 100))
     print()
 
-    return accuracy, precision, recall, f1
+    return test_loss, accuracy, precision, recall, f1
 
 if __name__ == '__main__':
-    parser: ArgumentParser = argparse.ArgumentParser()
-    # parser.add_argument('-p', '--prepare', help='Prepare task', required=False)
-    parser.add_argument('-cpg', '--cpg', action='store_true', help='Specify to perform CPG generation task')
-    parser.add_argument('-embed', '--embed', action='store_true', help='Specify to perform Embedding generation task')
-    parser.add_argument('-mode', '--mode', default="train", help='Specify the mode (e.g., train, test)')
-    parser.add_argument('-path', '--path', default=None, help='Specify the path for the model')
+    parser: ArgumentParser = ArgumentParser()
+    parser.add_argument('-m', '--modeLM', action='store_true', help='Specify the mode for LMTrain')
+    parser.add_argument('-p', '--path', default="data/model/model.pth", help='Specify the path for the model')
 
     args = parser.parse_args()
 
-    # if args.cpg:
-    #     CPG_generator()
-    # if args.embed:
-    #     Embed_generator()
-
     context = configs.Process()
+    split_dir = PATHS.split
     input_dataset = loads(PATHS.input)
-    # split the dataset and pass to DataLoader with batch size
-    train_loader, val_loader, test_loader = list(
+    
+    if check_split_exists(split_dir):
+        train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = load_split_datasets(split_dir, input_dataset)
+    else:
+        train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset = train_val_test_split(input_dataset, shuffle=context.shuffle, save_path=split_dir)
+    
+    # Create DataLoaders
+    train_loader, val_loader, test_loader, test_short_loader, test_long_loader = list(
         map(lambda x: x.get_loader(context.batch_size, shuffle=context.shuffle),
-            train_val_test_split(input_dataset, shuffle=context.shuffle)))
+            [train_dataset, val_dataset, test_dataset, test_short_dataset, test_long_dataset]))
 
     Bertggnn = configs.BertGGNN()
     gated_graph_conv_args = Bertggnn.model["gated_graph_conv_args"]
     conv_args = Bertggnn.model["conv_args"]
     emb_size = Bertggnn.model["emb_size"]
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    
+    # Select model based on the modeLM argument
+    if args.modeLM:
+        finetune_file = "data/model/graphcodebert_finetune.pt"
+        hugging_path = "data/model/graphcodebert_finetune_hf"
+        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
+        model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
+    else:
+        model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model_test = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
-    if args.mode == "train":
-        model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
-        optimizer = torch.optim.AdamW(model.parameters(), lr=Bertggnn.learning_rate, weight_decay=Bertggnn.weight_decay)
+    optimizer = torch.optim.AdamW(
+        model.parameters(), 
+        lr=Bertggnn.learning_rate, 
+        weight_decay=Bertggnn.weight_decay
+    )
 
-        best_acc = 0.0
-        NUM_EPOCHS = context.epochs
-        PATH = args.path
-        for epoch in range(1, NUM_EPOCHS + 1):
-            train(model, device, train_loader, optimizer, epoch)
-            acc, precision, recall, f1 = validate(model, DEVICE, val_loader, epoch)
-            if acc > best_acc:
-                best_acc = acc
-                if PATH:
-                    torch.save(model.state_dict(), PATH)
-        print(f"Training finished. Best Acc: {best_acc:.4f}")
+    best_f1 = 0.0
+    NUM_EPOCHS = context.epochs
+    PATH = args.path
+    losses = []
+    early_stopping = 0
+    patience = 10
+    for epoch in range(1, NUM_EPOCHS + 1):
+        train(model, device, train_loader, optimizer, epoch)
+        loss, acc, precision, recall, f1 = validate(model, device, val_loader, epoch)
+        losses.append(loss)
+        if f1 > best_f1:
+            best_f1 = f1
+            if PATH:
+                torch.save(model.state_dict(), PATH)
+        else:
+            early_stopping += 1
+            print(f"Early stopping: {early_stopping}")
+            if early_stopping >= patience:
+                print("Early stopping")
+                break
+    print(f"Training finished. Best F1: {best_f1:.4f}")
+    plot_validation_loss(losses, 'workspace/validation_loss.png')
 
-    model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device).to("cuda")
-    model_test.load_state_dict(torch.load(args.path))
-    test(model_test, DEVICE, test_loader)
+    # Load best model and test
+    if PATH:
+        model_test.load_state_dict(torch.load(PATH))
+        print("Testing full")
+        test(model_test, device, test_loader, 'workspace/')
+        print("Testing short")
+        test(model_test, device, test_short_loader, 'workspace/')
+        print("Testing long")
+        test(model_test, device, test_long_loader, 'workspace/')
+
+
 
 

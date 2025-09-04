@@ -40,3 +40,32 @@ def plot_roc_curve(y_true, y_probs, save_path, title="Receiver Operating Charact
     plt.close()
 
     return roc_auc
+
+
+def plot_validation_loss(losses, save_path, title="Validation Loss Over Epochs", figsize=(10, 6)):
+    """
+    Plot validation loss over epochs.
+
+    :param losses: List or array of validation loss values for each epoch
+    :param save_path: Path to save the plot
+    :param title: Title of the plot
+    :param figsize: Size of the figure
+    """
+    epochs = list(range(1, len(losses) + 1))
+
+    plt.figure(figsize=figsize)
+    plt.plot(epochs, losses, marker='o', linestyle='-', color='red', linewidth=2, markersize=4)
+    plt.xlabel("Epoch")
+    plt.ylabel("Validation Loss")
+    plt.title(title)
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(save_path, bbox_inches="tight")
+    plt.close()
+
+    # Print the losses
+    print(f"\n{title}:")
+    for epoch, loss in zip(epochs, losses):
+        print(f"Epoch {epoch}: {loss:.6f}")
+
+    return losses
