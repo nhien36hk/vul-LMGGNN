@@ -23,13 +23,12 @@ def run_kaggle_train(
     epochs: int = 30,
     k: float = 0.6,
     mode_lm: bool = True,
-    autoencoder_path: str = None,
-    split_dir: str = None,
+    autoencoder_path: str = "",
+    split_dir: str = "",
 ):
     output_model_dir = os.path.join(kaggle_working_dir, 'trained_models')
     figure_save_path = os.path.join(kaggle_working_dir, 'figures')
 
-    # split_dir = os.path.join(data_dir, 'split')
     input_dir = os.path.join(data_dir, 'input')
     finetune_file = os.path.join(data_dir, 'model', finetune_filename)
     
@@ -50,7 +49,7 @@ def run_kaggle_train(
         print(f"Loading split dataset from {split_dir}")
         train_ds, val_ds, test_ds, test_short_ds, test_long_ds = load_split_datasets(split_dir, input_dataset)
     else:
-        train_ds, val_ds, test_ds, test_short_ds, test_long_ds = train_val_test_split(input_dataset, shuffle=shuffle, save_path=split_dir)
+        train_ds, val_ds, test_ds, test_short_ds, test_long_ds = train_val_test_split(input_dataset, shuffle=shuffle, save_path=output_model_dir)
 
     # Build DataLoaders
     train_loader = train_ds.get_loader(batch_size, shuffle=True)
@@ -71,8 +70,8 @@ def run_kaggle_train(
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
         best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
     else:
-        model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
-        best_model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, gated_graph_conv_args["out_channels"]).to(device)
+        best_model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, gated_graph_conv_args["out_channels"]).to(device)
 
     optimizer = torch.optim.AdamW(
         model.parameters(), 
@@ -83,8 +82,6 @@ def run_kaggle_train(
     # Train loop
     best_f1 = 0.0
     losses = []
-    early_stopping = 0
-    patience = 10
     
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, optimizer, epoch)
@@ -93,12 +90,6 @@ def run_kaggle_train(
         if best_f1 < f1:
             best_f1 = f1
             torch.save(model.state_dict(), best_path)
-        else:
-            early_stopping += 1
-            print(f"Early stopping: {early_stopping}")
-            if early_stopping >= patience:
-                print("Early stopping")
-                break
 
     plot_validation_loss(losses, os.path.join(figure_save_path, 'validation_loss.png'))
     print(f"Training finished. Best F1: {best_f1:.4f}")

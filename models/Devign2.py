@@ -9,13 +9,13 @@ from .AutoEncoder import VectorAutoencoder
 
 
 class Devign2(nn.Module):
-    def __init__(self, gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim=101):
+    def __init__(self, gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim):
         super(Devign2, self).__init__()
 
         self.ggnn = GatedGraphConv(**gated_graph_conv_args).to(device)
         
-        # Thay thế Conv phức tạp bằng MLP đơn giản
         input_size = gated_graph_conv_args["out_channels"] + compressed_dim
+        print("input_size", input_size)
         self.classifier = nn.Sequential(
             nn.Linear(input_size, 256),
             nn.ReLU(),
