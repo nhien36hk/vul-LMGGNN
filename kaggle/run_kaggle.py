@@ -4,6 +4,7 @@ import torch
 import configs
 from models.Devign1 import Devign1
 from models.Devign2 import Devign2
+from models.Devign2Linear import Devign2Linear
 from models.LMGNN import BertGGCN
 from run import train, validate, plot_validation_loss
 from test import test
@@ -70,8 +71,10 @@ def run_kaggle_train(
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
         best_model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, k, hugging_path, finetune_file).to(device)
     else:
-        model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, gated_graph_conv_args["out_channels"]).to(device)
-        best_model = Devign2(gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, gated_graph_conv_args["out_channels"]).to(device)
+        autoencoder_path = "data/model/autoencoder.pt"
+        compressed_dim = bertggnn.model["compressed_dim"]
+        model = Devign2Linear(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        best_model = Devign2Linear(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
     optimizer = torch.optim.AdamW(
         model.parameters(), 

@@ -3,24 +3,17 @@ import torch.nn as nn
 from torch_geometric.nn.conv import GatedGraphConv
 from torch_geometric.nn import global_mean_pool
 
-from .AutoEncoder import VectorAutoencoder
 
 
-class Devign2(nn.Module):
-    def __init__(self, gated_graph_conv_args, conv_args, emb_size, device, autoencoder_path, compressed_dim):
-        super(Devign2, self).__init__()
+class Devign2Linear(nn.Module):
+    def __init__(self, gated_graph_conv_args, conv_args, emb_size, device):
+        super(Devign2Linear, self).__init__()
+
+        # Linear layer
+        self.linear = nn.Linear(emb_size, gated_graph_conv_args["out_channels"]).to(device)
 
         # Graph neural network layer
         self.ggnn = GatedGraphConv(**gated_graph_conv_args).to(device)
-        
-        # AutoEncoder setup
-        self.autoencoder = VectorAutoencoder(input_dim=emb_size, compressed_dim=compressed_dim).to(device)
-        state = torch.load(autoencoder_path, map_location=device)
-        self.autoencoder.load_state_dict(state)
-        # Freeze AE parameters
-        for p in self.autoencoder.parameters():
-            p.requires_grad = False
-        self.autoencoder.eval()
         
         # Classifier network
         self.classifier = nn.Sequential(
@@ -33,12 +26,11 @@ class Devign2(nn.Module):
     def forward(self, data):
         x_in, edge_index = data.x, data.edge_index
         
-        # Compress input vectors
-        with torch.no_grad():
-            compressed = self.autoencoder.compress(x_in)
+        # Linear layer
+        x_in = self.linear(x_in)
         
-        # Graph convolution on compressed vectors
-        x_gnn = self.ggnn(compressed, edge_index)
+        # Graph convolution
+        x_gnn = self.ggnn(x_in, edge_index)
 
         # Graph-level pooling
         graph_representation = global_mean_pool(x_gnn, data.batch)
