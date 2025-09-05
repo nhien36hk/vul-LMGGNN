@@ -6,7 +6,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from tqdm import tqdm
 
 import configs
-from models.Devign1 import Devign1
+from models.Devign2Linear import Devign2Linear
+from models.Devign2 import Devign2
 from models.LMGNN import BertGGCN
 from test import test
 from utils.data.helper import check_split_exists, loads
@@ -126,8 +127,10 @@ if __name__ == '__main__':
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
         model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
     else:
-        model = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
-        model_test = Devign1(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        autoencoder_path = "data/model/autoencoder.pt"
+        compressed_dim = Bertggnn.model["compressed_dim"]
+        model = Devign2Linear(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model_test = Devign2Linear(gated_graph_conv_args, conv_args, emb_size, device).to(device)
 
     optimizer = torch.optim.AdamW(
         model.parameters(), 
