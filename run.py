@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from tqdm import tqdm
 
 import configs
+from models.Devign1 import Devign1
 from models.Devign2Linear import Devign2Linear
 from models.Devign2 import Devign2
 from models.LMGNN import BertGGCN
@@ -93,13 +94,7 @@ def validate(model, device, test_loader, epoch):
 
     return test_loss, accuracy, precision, recall, f1
 
-if __name__ == '__main__':
-    parser: ArgumentParser = ArgumentParser()
-    parser.add_argument('-m', '--modeLM', action='store_true', help='Specify the mode for LMTrain')
-    parser.add_argument('-p', '--path', default="data/model/model.pth", help='Specify the path for the model')
-
-    args = parser.parse_args()
-
+def process_task(isLM: bool):
     context = configs.Process()
     split_dir = PATHS.split
     input_dataset = loads(PATHS.input)
@@ -121,16 +116,14 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     
     # Select model based on the modeLM argument
-    if args.modeLM:
+    if isLM:
         finetune_file = "data/model/graphcodebert_finetune.pt"
         hugging_path = "data/model/graphcodebert_finetune_hf"
         model = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
         model_test = BertGGCN(gated_graph_conv_args, conv_args, emb_size, device, hugging_path=hugging_path, finetune_file=finetune_file).to(device)
     else:
-        autoencoder_path = "data/model/autoencoder.pt"
-        compressed_dim = Bertggnn.model["compressed_dim"]
-        model = Devign2Linear(gated_graph_conv_args, conv_args, emb_size, device).to(device)
-        model_test = Devign2Linear(gated_graph_conv_args, conv_args, emb_size, device).to(device)
+        model = Devign1(gated_graph_conv_args, device).to(device)
+        model_test = Devign1(gated_graph_conv_args, device).to(device)
 
     optimizer = torch.optim.AdamW(
         model.parameters(), 
@@ -140,7 +133,7 @@ if __name__ == '__main__':
 
     best_f1 = 0.0
     NUM_EPOCHS = context.epochs
-    PATH = args.path
+    PATH = PATHS.model + "model.pth"
     losses = []
     early_stopping = 0
     patience = 10
@@ -170,6 +163,18 @@ if __name__ == '__main__':
         test(model_test, device, test_short_loader, 'workspace/')
         print("Testing long")
         test(model_test, device, test_long_loader, 'workspace/')
+
+if __name__ == '__main__':
+    parser: ArgumentParser = ArgumentParser()
+    parser.add_argument('-m', '--modeLM', action='store_true')
+    parser.add_argument('-p', '--process', action='store_true')
+
+    args = parser.parse_args()
+
+    if args.process:
+        process_task(args.modeLM)
+
+
 
 
 
